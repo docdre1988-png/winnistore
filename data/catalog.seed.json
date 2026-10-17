@@ -1,0 +1,284 @@
+{
+  "products": [
+    {
+      "id": 1002,
+      "nombre": "SAMSUNG Galaxy A07 4GB 64GB",
+      "categoria": "TELEFONIA Y ACCESORIOS",
+      "precio": 449,
+      "precioAnterior": null,
+      "imagen": "assets/catalogo/producto-1-1.webp",
+      "imagenes": [
+        "assets/catalogo/producto-1-1.webp"
+      ],
+      "descripcion": "Tamaño de la pantalla:6.7, Memoria RAM:4GB, Cámara frontal:8 MP,8 MP, Capacidad de almacenamiento:64GB, Conectividad celular: Conectividad Celular 4G, Procesador específico: MediaTek | Helio G99 Octa-Core, Resistente al agua: IPX4 (Protegido contra las salpicaduras de agua)",
+      "disponible": "SI",
+      "destacado": "NO"
+    },
+    {
+      "id": 1003,
+      "nombre": "SAMSUNG Celular Galaxy A16 128gb Black",
+      "categoria": "TELEFONIA Y ACCESORIOS",
+      "precio": 599,
+      "precioAnterior": null,
+      "imagen": "assets/catalogo/producto-2-3.webp",
+      "imagenes": [
+        "assets/catalogo/producto-2-3.webp"
+      ],
+      "descripcion": "Tamaño de la pantalla: 6.7, Capacidad de almacenamiento:128GB, Memoria RAM:4GB, Cámara frontal:13 MP, Cámara principal:50 MP, Conectividad celular : Bluetooth,Wifi,NFC, Procesador específico: Octa Core",
+      "disponible": "SI",
+      "destacado": "NO"
+    },
+    {
+      "id": 1004,
+      "nombre": "APPLE AirPods 4 con Cancelación Activa de Ruido",
+      "categoria": "TELEFONIA Y ACCESORIOS",
+      "precio": 799,
+      "precioAnterior": 1099,
+      "imagen": "assets/catalogo/producto-3-4.webp",
+      "imagenes": [
+        "assets/catalogo/producto-3-4.webp"
+      ],
+      "descripcion": "Tipo: Audífonos bluetooth, Peso: 0.125, Resistente al agua: Sí, Aislador de sonido: Sí,Compatibilidad: IOS, ¿Qué incluye?: ESTUCHE DE CARGA",
+      "disponible": "SI",
+      "destacado": "SI"
+    },
+    {
+      "id": 1005,
+      "nombre": "LENOVO Reloj Inteligente Fit AMOLED Bluetooth Llamadas Deportivo Gris",
+      "categoria": "TELEFONIA Y ACCESORIOS",
+      "precio": 139,
+      "precioAnterior": 199,
+      "imagen": "assets/catalogo/producto-4-11.webp",
+      "imagenes": [
+        "assets/catalogo/producto-4-11.webp"
+      ],
+      "descripcion": "Disfruta una experiencia inteligente con pantalla AMOLED de 1,952\", llamadas Bluetooth y un diseño moderno para acompañarte todos los días,Bluetooth 5.4, Resistencia al agua IP68, Múltiples funciones inteligentes: notificaciones, calendario, clima, asistente de voz y más, Compatible con Android 10.0+ e iOS 10.0+. Color: Gris. Cuenta con monitoreo de salud, incluyendo frecuencia cardíaca, oxígeno en sangre (SpO₂) y seguimiento del sueño. Además, incorpora más de 50 modos deportivos para diferentes actividades. COLORES: naranjo, verde, morado, azul",
+      "disponible": "SI",
+      "destacado": "SI"
+    },
+    {
+      "id": 1006,
+      "nombre": "CONVERSE Zapatillas Urbanas Mujer Converse All Star Double Stack Platform Seasonal Color",
+      "categoria": "CALZADO Y ZAPATILLAS",
+      "precio": 271.92,
+      "precioAnterior": 339.9,
+      "imagen": "assets/catalogo/producto-5-12.webp",
+      "imagenes": [
+        "assets/catalogo/producto-5-12.webp"
+      ],
+      "descripcion": "Con las zapatillas urbanas Converse All Star Double Stack Platform Seasonal Color, tú marcas la pauta en cada paso. Este modelo para mujer eleva tu estilo con una altura de plataforma media, brindándote una silueta moderna y versátil. Su confección con material poliéster en la plantilla y el forro asegura una comodidad duradera, mientras que el tipo de ajuste con cordones te permite un calce seguro y personalizado. Ideales para combinar con tus atuendos diarios, estas zapatillas son el complemento perfecto para tu look urbano.",
+      "disponible": "SI",
+      "destacado": "SI"
+    },
+    {
+      "id": 1007,
+      "nombre": "ADIDAS Zapatillas Hombre Running Treadmove KI8354 Adidas",
+      "categoria": "CALZADO Y ZAPATILLAS",
+      "precio": 179,
+      "precioAnterior": 299,
+      "imagen": "assets/catalogo/producto-6-15.webp",
+      "imagenes": [
+        "assets/catalogo/producto-6-15.webp"
+      ],
+      "descripcion": "Mejora tus entrenamientos con las Adidas Treadmove, diseñadas para ofrecer amortiguación alta, comodidad y ligereza en cada zancada. Su material textil transpirable ayuda a mantener los pies frescos, mientras que el ajuste con cordones brinda soporte y estabilidad. Ideales para el running diario, cuentan con una horma pequeña para un ajuste más ceñido.",
+      "disponible": "SI",
+      "destacado": "SI"
+    },
+    {
+      "id": 1008,
+      "nombre": "NIKE Zapatillas Hombre Training Air Max Alpha Trainer 6 FQ1833-402 Nike",
+      "categoria": "CALZADO Y ZAPATILLAS",
+      "precio": 429,
+      "precioAnterior": 655,
+      "imagen": "assets/catalogo/producto-7-16.webp",
+      "imagenes": [
+        "assets/catalogo/producto-7-16.webp"
+      ],
+      "descripcion": "¡Supera tus límites en cada entrenamiento con las Zapatillas Training Hombre Nike Air Max Alpha Trainer 6! Diseñadas para ofrecerte el máximo soporte y comodidad, estas zapatillas son tu aliado perfecto para conquistar tus metas de fitness. Su tecnología Air Max te brinda una amortiguación reactiva que absorbe el impacto, mientras que su construcción en textil asegura transpirabilidad y ligereza en cada movimiento. Siente la confianza y el estilo que solo Nike puede ofrecerte, impulsando tu rendimiento y bienestar en cada sesión.",
+      "disponible": "SI",
+      "destacado": "SI"
+    },
+    {
+      "id": 1009,
+      "nombre": "NEW BALANCE Zapatillas Urbanas Hombre New Balance 327",
+      "categoria": "CALZADO Y ZAPATILLAS",
+      "precio": 379.9,
+      "precioAnterior": 480,
+      "imagen": "assets/catalogo/producto-8-20.webp",
+      "imagenes": [
+        "assets/catalogo/producto-8-20.webp"
+      ],
+      "descripcion": "Descubre las zapatillas urbanas New Balance 327 para hombre, el calzado perfecto para ti que buscas combinar estilo y confort en tu día a día. Con un diseño que evoca la estética clásica pero adaptada a las tendencias actuales, estas zapatillas presentan una horma normal y un ajuste de cordones que se adapta a tu pie, brindándote seguridad en cada paso. Su suela de caucho ofrece una tracción confiable y duradera, mientras que la altura de plataforma baja te proporciona una sensación de ligereza y agilidad. Este modelo es ideal para quienes valoran un look distintivo y una comodidad excepcional en cualquier entorno urbano",
+      "disponible": "SI",
+      "destacado": "SI"
+    },
+    {
+      "id": 1010,
+      "nombre": "ADIDAS Zapatillas Running Mujer Adidas Response Pace",
+      "categoria": "CALZADO Y ZAPATILLAS",
+      "precio": 199,
+      "precioAnterior": null,
+      "imagen": "assets/catalogo/producto-9-24.webp",
+      "imagenes": [
+        "assets/catalogo/producto-9-24.webp"
+      ],
+      "descripcion": "Las zapatillas running para mujer Adidas Response Pace te impulsan a superar cada entrenamiento con una experiencia de carrera superior. Diseñadas para brindarte el máximo confort, cuentan con una amortiguación alta que absorbe el impacto de cada pisada, protegiendo tus articulaciones. Su confección textil asegura transpirabilidad, manteniendo tus pies frescos y secos. El ajuste con cordones te proporciona estabilidad y seguridad en cada movimiento, para que te enfoques únicamente en alcanzar tus metas personales en la pista o la calle.",
+      "disponible": "SI",
+      "destacado": "NO"
+    },
+    {
+      "id": 1011,
+      "nombre": "PUMA. Zapatillas Hombre Running Blaze Lite 312587 10",
+      "categoria": "CALZADO Y ZAPATILLAS",
+      "precio": 169.9,
+      "precioAnterior": 279,
+      "imagen": "assets/catalogo/producto-10-30.webp",
+      "imagenes": [
+        "assets/catalogo/producto-10-30.webp"
+      ],
+      "descripcion": "Las zapatillas Running PUMA para hombre te ofrecen la combinación perfecta de rendimiento y confort para tus carreras diarias. Su diseño textil y ajuste con cordones te brindan una sujeción segura y adaptable, mientras que su alta amortiguación absorbe el impacto en cada paso, protegiendo tus articulaciones y permitiéndote correr más tiempo con menos fatiga. Ideales para corredores con pisada neutra, estas zapatillas ligeras te impulsarán a alcanzar tus metas en cualquier terreno.",
+      "disponible": "SI",
+      "destacado": "SI"
+    },
+    {
+      "id": 1012,
+      "nombre": "OSTER Freidora De Aire Oster 6 Litros Ventana Y Luz.",
+      "categoria": "ELECTROHOGAR",
+      "precio": 349,
+      "precioAnterior": 499,
+      "imagen": "assets/catalogo/producto-11-34.webp",
+      "imagenes": [
+        "assets/catalogo/producto-11-34.webp"
+      ],
+      "descripcion": "¡Disfruta comidas deliciosas y crujientes en casa! 🍟✨\n\nPrepara tus platos favoritos con la Freidora de Aire Oster de 6 litros, ideal para cocinar de manera práctica y disfrutar de alimentos dorados y crujientes utilizando poco o nada de aceite, según la receta.\n\nSu ventana transparente con luz interior te permite observar la cocción sin necesidad de abrir la freidora. Además, su diseño moderno en color negro combina perfectamente con tu cocina.",
+      "disponible": "SI",
+      "destacado": "SI"
+    },
+    {
+      "id": 1013,
+      "nombre": "PRACTIKA Cuatricombo Practika Licuadora Bl-600+Arrocera Pom 1 K II +Hervidor Inox 18 Plus+Cafetera Vicenza",
+      "categoria": "ELECTROHOGAR",
+      "precio": 209,
+      "precioAnterior": 409.9,
+      "imagen": "assets/catalogo/producto-12-38.webp",
+      "imagenes": [
+        "assets/catalogo/producto-12-38.webp"
+      ],
+      "descripcion": "Combo de Electrodomésticos Practika 4 en 1\nEquipa tu cocina con este práctico combo Practika, que incluye licuadora con molinillo y vaso de vidrio de 1.5 L, olla arrocera de 1.5 L con revestimiento antiadherente, hervidor de acero inoxidable de 1.8 L con apagado automático y cafetera de 10 tazas con función antigoteo y placa calentadora. Funcionalidad, diseño moderno y practicidad para disfrutar cada preparación en casa.",
+      "disponible": "SI",
+      "destacado": "SI"
+    },
+    {
+      "id": 1014,
+      "nombre": "THOMAS Minipimer 600W TH-8725",
+      "categoria": "ELECTROHOGAR",
+      "precio": 129,
+      "precioAnterior": 179,
+      "imagen": "assets/catalogo/producto-13-39.webp",
+      "imagenes": [
+        "assets/catalogo/producto-13-39.webp"
+      ],
+      "descripcion": "¡Todo lo que necesitas para preparar tus recetas favoritas! \nLa Minipimer Thomas de 600 W es una herramienta versátil y práctica para tu cocina. Pica, tritura, bate y mezcla ingredientes fácilmente, ideal para preparar cremas, salsas, batidos y mucho más.",
+      "disponible": "SI",
+      "destacado": "SI"
+    },
+    {
+      "id": 1015,
+      "nombre": "SYBILLA Top Strapless Mujer Sybilla",
+      "categoria": "MUJER",
+      "precio": 79.9,
+      "precioAnterior": null,
+      "imagen": "assets/catalogo/producto-14-40.webp",
+      "imagenes": [
+        "assets/catalogo/producto-14-40.webp"
+      ],
+      "descripcion": "¡Dale un toque moderno y sofisticado a tu estilo!\n\nLuce increíble con este top strapless asimétrico para mujer, una prenda moderna y versátil que destaca por su diseño original y femenino. Ideal para crear outfits casuales o elegantes, perfectos para salidas, reuniones y ocasiones especiales.",
+      "disponible": "SI",
+      "destacado": "NO"
+    },
+    {
+      "id": 1016,
+      "nombre": "SYBILLA Vestido Mujer Sybilla",
+      "categoria": "MUJER",
+      "precio": 119.9,
+      "precioAnterior": null,
+      "imagen": "assets/catalogo/producto-15-42.webp",
+      "imagenes": [
+        "assets/catalogo/producto-15-42.webp"
+      ],
+      "descripcion": "!Comodidad y estilo para cada ocasión! Luce un look moderno y femenino, ideal para crear oufits casuales y relajados sin perder estilo. Perfeto para tus salidas, paseos y actividades del día a día",
+      "disponible": "SI",
+      "destacado": "NO"
+    },
+    {
+      "id": 1017,
+      "nombre": "SYBILLA Polo Mujer Sybilla",
+      "categoria": "MUJER",
+      "precio": 59.9,
+      "precioAnterior": null,
+      "imagen": "assets/catalogo/producto-16-43.webp",
+      "imagenes": [
+        "assets/catalogo/producto-16-43.webp"
+      ],
+      "descripcion": "¡Dale un toque moderno y deportivo a tu estilo!\n\nLuce un look cómodo y juvenil con este peto para mujer, ideal para crear outfits deportivos y casuales. Su diseño versátil te permite combinarlo fácilmente con zapatillas, casacas o tus prendas favoritas para disfrutar de tus actividades diarias con estilo.",
+      "disponible": "SI",
+      "destacado": "NO"
+    },
+    {
+      "id": 1018,
+      "nombre": "BEARCLIFF Jean Hombre Bearcliff",
+      "categoria": "HOMBRES",
+      "precio": 77.94,
+      "precioAnterior": 129.9,
+      "imagen": "assets/catalogo/producto-17-46.webp",
+      "imagenes": [
+        "assets/catalogo/producto-17-46.webp"
+      ],
+      "descripcion": "¡Luce un estilo urbano, moderno y relajado!\n\nRenueva tu look con el Jean Baggy para Hombre de Bearcliff, diseñado para brindar comodidad y libertad de movimiento gracias a su corte holgado. Confeccionado en algodón, ofrece una sensación agradable al tacto y un estilo casual ideal para el día a día. COLORES: Negro, Azul y celeste",
+      "disponible": "SI",
+      "destacado": "SI"
+    },
+    {
+      "id": 1019,
+      "nombre": "BEARCLIFF. Jean hombre Bearcliff",
+      "categoria": "HOMBRES",
+      "precio": 109.9,
+      "precioAnterior": 295,
+      "imagen": "assets/catalogo/producto-18-47.webp",
+      "imagenes": [
+        "assets/catalogo/producto-18-47.webp"
+      ],
+      "descripcion": "Destaca con el Jean Balloon a Rayas, una prenda que combina un diseño llamativo con una silueta contemporánea. Su corte balloon aporta volumen y un look relajado, mientras que el estampado de rayas añade personalidad a tus outfits.",
+      "disponible": "SI",
+      "destacado": "SI"
+    },
+    {
+      "id": 1020,
+      "nombre": "APRENDE EL NEGOCIO DE LAS UÑAS",
+      "categoria": "EDUCACION",
+      "precio": 327,
+      "precioAnterior": 545,
+      "imagen": "assets/catalogo/producto-19-45.webp",
+      "imagenes": [
+        "assets/catalogo/producto-19-45.webp"
+      ],
+      "descripcion": "¿Te gustaría convertirte en una manicurista profesional y montar tu propio negocio? Con el MasterClass APRENDE EL NEGOCIO LAS UÑAS, aprenderás todas las técnicas para que te conviertas en una PROFESIONAL en el arte del arreglo de uñas y puedas generar altos ingresos. ¿QUÉ VAS A LOGRAR? Aprenderás todas las técnicas y te convertirás en una profesional. Tendrás todas las herramientas para crear tu propio negocio y ser tu propia jefa Realizar fantásticos y sorprendentes diseños. Se entrega certificado al concluir el curso.",
+      "disponible": "SI",
+      "destacado": "SI"
+    },
+    {
+      "id": 1021,
+      "nombre": "MAQUILLAJE PERMANENTE",
+      "categoria": "EDUCACION",
+      "precio": 255,
+      "precioAnterior": 495,
+      "imagen": "assets/catalogo/producto-20-44.webp",
+      "imagenes": [
+        "assets/catalogo/producto-20-44.webp"
+      ],
+      "descripcion": "Desbloquea todo tu potencial con el producto transformador de Masterclasse.La. Aprende de los mejores y lleva tus habilidades al siguiente nivel con nuestra oferta digital.",
+      "disponible": "SI",
+      "destacado": "SI"
+    }
+  ]
+}

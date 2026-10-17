@@ -1,0 +1,1 @@
+{"name":"winni-store","private":true,"scripts":{"start":"node --env-file-if-exists=.env server.mjs","test":"node --test tests/server.test.mjs"},"engines":{"node":">=22"}}

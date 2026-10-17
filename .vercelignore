@@ -1,0 +1,10 @@
+.env*
+!/.env.example
+modelo-original/
+tests/
+contexto.md
+data/catalog.json
+data/catalog.tmp
+data/uploads/
+ADMIN-SETUP.md
+README.md

@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+modelo-original/
+contexto.md
+data/catalog.tmp
+data/catalog.json
+data/uploads/
+node_modules/
+public/
+.vercel/
