@@ -3,13 +3,11 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {randomBytes, timingSafeEqual,createHmac,createHash} from 'node:crypto';
-const root=path.dirname(fileURLToPath(import.meta.url));
+const root=process.env.VERCEL?process.cwd():path.dirname(fileURLToPath(import.meta.url));
 const dataDir=path.resolve(process.env.DATA_DIR||(process.env.VERCEL?'/tmp/winni':path.join(root,'data')));
 const password=process.env.ADMIN_PASSWORD||'';
-const bin=process.env.JSONBIN_BIN_ID||'',key=process.env.JSONBIN_ACCESS_KEY||'';
-if(Boolean(bin)!==Boolean(key))throw Error('Configura JSONBIN_BIN_ID y JSONBIN_ACCESS_KEY juntos.');
-if(bin&&!/^[a-f\d]{24}$/i.test(bin))throw Error('JSONBIN_BIN_ID inválido.');
-await fs.mkdir(path.join(dataDir,'uploads'),{recursive:true});
+const bin=(process.env.JSONBIN_BIN_ID||'').trim(),key=(process.env.JSONBIN_ACCESS_KEY||'').trim();
+const configError=Boolean(bin)!==Boolean(key)?'Configura JSONBIN_BIN_ID y JSONBIN_ACCESS_KEY juntos.':bin&&!/^[a-f\d]{24}$/i.test(bin)?'JSONBIN_BIN_ID inválido. Usa solo el ID de 24 caracteres, no la URL.':null;
 const attempts=new Map();let queue=Promise.resolve(),cache;
 const sign=value=>createHmac('sha256',password).update(value).digest('hex');
 const fail=(message,status=400)=>Object.assign(new Error(message),{status});
@@ -19,8 +17,8 @@ async function jsonbin(method,body){
  if(!response.ok)throw fail('No se pudo conectar con JSONBin. Revisa la configuración y la cuota.',502);
  return (await response.json()).record;
 }
-async function read(){if(bin){if(cache&&Date.now()-cache.time<15000)return structuredClone(cache.record);const record=await jsonbin('GET');if(!record||!Array.isArray(record.products))throw fail('El bin debe contener un objeto con products.',502);cache={time:Date.now(),record};return structuredClone(record);}try{return JSON.parse(await fs.readFile(path.join(dataDir,'catalog.json'),'utf8'));}catch(e){if(e.code!=='ENOENT')throw e;return JSON.parse(await fs.readFile(path.join(root,'data/catalog.seed.json'),'utf8'));}}
-async function write(record){if(process.env.VERCEL&&!bin)throw fail('Configura JSONBin antes de guardar en Vercel.',503);if(Buffer.byteLength(JSON.stringify(record))>95000)throw fail('El catálogo supera el límite configurado de 95 KB.');if(bin){await jsonbin('PUT',record);cache={time:Date.now(),record:structuredClone(record)};}else{await fs.writeFile(path.join(dataDir,'catalog.tmp'),JSON.stringify(record,null,2));await fs.rename(path.join(dataDir,'catalog.tmp'),path.join(dataDir,'catalog.json'));}}
+async function read(){if(configError)throw fail(configError,503);if(bin){if(cache&&Date.now()-cache.time<15000)return structuredClone(cache.record);const record=await jsonbin('GET');if(!record||!Array.isArray(record.products))throw fail('El bin debe contener un objeto con products.',502);cache={time:Date.now(),record};return structuredClone(record);}try{return JSON.parse(await fs.readFile(path.join(dataDir,'catalog.json'),'utf8'));}catch(e){if(e.code!=='ENOENT')throw e;return JSON.parse(await fs.readFile(path.join(root,'data/catalog.seed.json'),'utf8'));}}
+async function write(record){if(configError)throw fail(configError,503);if(process.env.VERCEL&&!bin)throw fail('Configura JSONBin antes de guardar en Vercel.',503);if(Buffer.byteLength(JSON.stringify(record))>95000)throw fail('El catálogo supera el límite configurado de 95 KB.');if(bin){await jsonbin('PUT',record);cache={time:Date.now(),record:structuredClone(record)};}else{await fs.mkdir(dataDir,{recursive:true});await fs.writeFile(path.join(dataDir,'catalog.tmp'),JSON.stringify(record,null,2));await fs.rename(path.join(dataDir,'catalog.tmp'),path.join(dataDir,'catalog.json'));}}
 function validate(p){
  for(const [field,max] of [['nombre',180],['categoria',80],['descripcion',10000]])if(typeof p[field]!=='string'||!p[field].trim()||p[field].length>max)throw fail(`Revisa el campo ${field}.`);
  if(typeof p.precio!=='number'||!Number.isFinite(p.precio)||p.precio<=0||p.precio>1000000)throw fail('Precio inválido.');
@@ -33,7 +31,7 @@ function send(res,status,value){res.writeHead(status,{'Content-Type':'applicatio
 function authed(req){const token=(req.headers.cookie||'').split('; ').find(x=>x.startsWith('winni_admin='))?.slice(12);if(password.length>=12&&token){const [expiry,nonce,signature]=token.split('.');if(Number(expiry)>Date.now()&&nonce&&signature&&equal(sign(`${expiry}.${nonce}`),signature))return token;}throw fail('Inicia sesión para continuar.',401);}
 function originCheck(req){if(req.headers.origin&&new URL(req.headers.origin).host!==req.headers.host)throw fail('Origen no permitido.',403);}
 const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.jpg':'image/jpeg','.png':'image/png','.webp':'image/webp'};
-export const server=http.createServer(async(req,res)=>{
+export async function handleRequest(req,res){
  res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','same-origin');res.setHeader('X-Frame-Options','DENY');
  try{
  const url=new URL(req.url,'http://localhost'),route=url.pathname;
@@ -58,7 +56,7 @@ export const server=http.createServer(async(req,res)=>{
     const response=await fetch(`https://api.cloudinary.com/v1_1/${encodeURIComponent(process.env.CLOUDINARY_CLOUD_NAME)}/image/upload`,{method:'POST',body:form,signal:AbortSignal.timeout(20000)});if(!response.ok)throw fail('No se pudo subir la foto a Cloudinary.',502);const result=await response.json();if(!result.secure_url?.startsWith('https://'))throw fail('Cloudinary no devolvió una imagen válida.',502);return send(res,201,{url:result.secure_url});
    }
    if(process.env.VERCEL)throw fail('Configura Cloudinary para subir fotos en Vercel, o usa una URL HTTPS.',503);
-   const name=randomBytes(16).toString('hex')+'.'+ext;await fs.writeFile(path.join(dataDir,'uploads',name),buffer);return send(res,201,{url:'/uploads/'+name});
+   await fs.mkdir(path.join(dataDir,'uploads'),{recursive:true});const name=randomBytes(16).toString('hex')+'.'+ext;await fs.writeFile(path.join(dataDir,'uploads',name),buffer);return send(res,201,{url:'/uploads/'+name});
   }
   const match=route.match(/^\/api\/admin\/products(?:\/(\d+))?$/);
   if(match&&['POST','PUT','DELETE'].includes(req.method)){
@@ -74,5 +72,6 @@ export const server=http.createServer(async(req,res)=>{
  const base=rel.startsWith('uploads/')?dataDir:root,file=path.resolve(base,rel);if(!file.startsWith(base+path.sep))throw fail('No encontrado.',404);
  const buffer=await fs.readFile(file);res.writeHead(200,{'Content-Type':types[path.extname(file)]||'application/octet-stream','Cache-Control':rel.startsWith('uploads/')?'public, max-age=86400':'no-cache'});res.end(req.method==='HEAD'?undefined:buffer);
  }catch(e){send(res,e.status||(e.code==='ENOENT'?404:500),{error:e.status?e.message:e.code==='ENOENT'?'No encontrado.':'Error del servidor. Intenta nuevamente.'});}
-});
+}
+export const server=http.createServer(handleRequest);
 if(process.argv[1]===fileURLToPath(import.meta.url))server.listen(Number(process.env.PORT||4174),process.env.HOST||'127.0.0.1',()=>console.log(`Winni Store: http://127.0.0.1:${process.env.PORT||4174} · Admin: /admin.html`));

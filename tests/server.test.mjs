@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
+import {spawnSync} from 'node:child_process';
 test('Catálogo: autenticación, altas, edición, ocultar, fotos y eliminación persistente',async()=>{
  const dir=await mkdtemp(path.join(tmpdir(),'winni-test-'));
  process.env.DATA_DIR=dir;process.env.ADMIN_PASSWORD='test-only-long-password';
@@ -33,6 +34,22 @@ test('Catálogo: autenticación, altas, edición, ocultar, fotos y eliminación 
   assert.equal((await (await request('/api/admin/catalog')).json()).products.length,original);
   const logout=await request('/api/logout','POST');assert(logout.headers.get('set-cookie').includes('Max-Age=0'));cookie='';assert.equal((await request('/api/admin/catalog')).status,401);
  }finally{await new Promise(r=>server.close(r));await rm(dir,{recursive:true,force:true});}
+});
+
+test('Vercel: el handler espera la respuesta y la configuración inválida no rompe el arranque',()=>{
+ for(const scenario of ['seed','invalid-config']){
+  const code=`
+   import assert from 'node:assert/strict';
+   import handler from './api/handler.mjs';
+   const res={headersSent:false,writableEnded:false,setHeader(){},writeHead(status){this.status=status;this.headersSent=true;},end(value){this.value=value;this.writableEnded=true;}};
+   await handler({url:'/api/catalog',method:'GET',headers:{},socket:{}},res);
+   assert.equal(res.writableEnded,true,'El handler debe esperar a que termine la respuesta');
+   const data=JSON.parse(res.value);
+   ${scenario==='seed'?"assert.equal(res.status,200);assert.equal(data.products.length,20);":"assert.equal(res.status,503);assert(data.error.includes('JSONBIN_BIN_ID'));"}
+  `;
+  const result=spawnSync(process.execPath,['--input-type=module','-e',code],{cwd:process.cwd(),encoding:'utf8',env:{...process.env,VERCEL:'1',DATA_DIR:path.join(process.cwd(),'does-not-exist','read-only'),JSONBIN_BIN_ID:scenario==='seed'?'':'invalid-placeholder',JSONBIN_ACCESS_KEY:scenario==='seed'?'':'test-key'}});
+  assert.equal(result.status,0,result.stderr);
+ }
 });
 
 test('Adaptadores JSONBin y Cloudinary: credenciales de servidor y sesión entre instancias',async()=>{
