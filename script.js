@@ -39,10 +39,16 @@ function openProduct(id){
  $('product-name').textContent=p.nombre;
  $('product-category').textContent=p.categoria;
  $('product-description').textContent=p.descripcion;
+ $('product-description').classList.add('description-collapsed');
+ $('description-toggle').setAttribute('aria-expanded','false');
+ $('description-toggle').textContent='Leer más';
+ $('description-toggle').hidden=true;
  $('product-price').textContent=money(p.precio);
  $('product-old-price').textContent=p.precioAnterior>p.precio?money(p.precioAnterior):'';
  $('product-image').src=p.imagen;$('product-image').alt=p.nombre;
  $('product-add').dataset.id=String(id);$('product-dialog').showModal();
+ $('product-dialog').scrollTop=0;
+ requestAnimationFrame(()=>{const description=$('product-description');$('description-toggle').hidden=description.scrollHeight<=description.clientHeight+1;});
 }
 $('product-close').addEventListener('click',()=>$('product-dialog').close());
 $('product-dialog').addEventListener('click',e=>{if(e.target!==$('product-dialog'))return;const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.target.close();});
@@ -51,3 +57,5 @@ $('product-add').addEventListener('click',()=>{const id=Number($('product-add').
 async function refreshCatalog(){try{const response=await fetch("/api/catalog",{cache:"no-store"});if(!response.ok)return;const data=await response.json();if(!Array.isArray(data.products))return;products=data.products;cart=cart.filter(x=>products.some(p=>p.id===x.id));if(category!=="todos"&&!products.some(p=>p.categoria===category))category="todos";renderFilters();render();save();}catch{/* Static preview retains the seed catalog. */}}
 refreshCatalog();
 window.addEventListener("focus",refreshCatalog);
+
+$('description-toggle').addEventListener('click',()=>{const expanded=$('description-toggle').getAttribute('aria-expanded')==='true';$('description-toggle').setAttribute('aria-expanded',String(!expanded));$('description-toggle').textContent=expanded?'Leer más':'Leer menos';$('product-description').classList.toggle('description-collapsed',expanded);});
