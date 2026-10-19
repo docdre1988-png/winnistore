@@ -28,7 +28,7 @@ function validate(p){
 }
 async function body(req){if(req.body&&typeof req.body==='object'){if(Buffer.byteLength(JSON.stringify(req.body))>4400000)throw fail('Archivo demasiado grande.',413);return req.body;}let size=0,chunks=[];for await(const chunk of req){size+=chunk.length;if(size>4400000)throw fail('Archivo demasiado grande.',413);chunks.push(chunk);}try{return JSON.parse(Buffer.concat(chunks).toString());}catch{throw fail('JSON inválido.');}}
 function send(res,status,value){res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});res.end(JSON.stringify(value));}
-function authed(req){const token=(req.headers.cookie||'').split('; ').find(x=>x.startsWith('winni_admin='))?.slice(12);if(password.length>=12&&token){const [expiry,nonce,signature]=token.split('.');if(Number(expiry)>Date.now()&&nonce&&signature&&equal(sign(`${expiry}.${nonce}`),signature))return token;}throw fail('Inicia sesión para continuar.',401);}
+function authed(req){const token=(req.headers.cookie||'').split('; ').find(x=>x.startsWith('winni_admin='))?.slice(12);if(password.length>0&&token){const [expiry,nonce,signature]=token.split('.');if(Number(expiry)>Date.now()&&nonce&&signature&&equal(sign(`${expiry}.${nonce}`),signature))return token;}throw fail('Inicia sesión para continuar.',401);}
 function originCheck(req){if(req.headers.origin&&new URL(req.headers.origin).host!==req.headers.host)throw fail('Origen no permitido.',403);}
 const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.jpg':'image/jpeg','.png':'image/png','.webp':'image/webp'};
 export async function handleRequest(req,res){
@@ -39,7 +39,7 @@ export async function handleRequest(req,res){
   if(req.method!=='GET')originCheck(req);
   if(route==='/api/catalog'&&req.method==='GET'){const record=await read();return send(res,200,{products:record.products.filter(p=>p.disponible==='SI')});}
   if(route==='/api/login'&&req.method==='POST'){
-   if(password.length<12)throw fail('Configura ADMIN_PASSWORD con al menos 12 caracteres en el servidor.',503);
+   if(!password.length)throw fail('Configura ADMIN_PASSWORD en el servidor. No puede estar vacía.',503);
    const ip=req.socket.remoteAddress,now=Date.now();let limit=attempts.get(ip);if(!limit||now>limit.until){limit={count:0,until:now+900000};attempts.set(ip,limit);}if(limit.count>=10)throw fail('Demasiados intentos. Espera 15 minutos.',429);
    const input=await body(req);if(typeof input.password!=='string'||!equal(input.password,password)){limit.count++;throw fail('Contraseña incorrecta.',401);}attempts.delete(ip);
    const payload=`${now+8*3600000}.${randomBytes(16).toString('hex')}`,token=`${payload}.${sign(payload)}`;res.setHeader('Set-Cookie',`winni_admin=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=28800${req.socket.encrypted||process.env.VERCEL||process.env.COOKIE_SECURE==='true'?'; Secure':''}`);return send(res,200,{ok:true});

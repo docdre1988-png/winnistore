@@ -6,7 +6,7 @@ import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 test('Catálogo: autenticación, altas, edición, ocultar, fotos y eliminación persistente',async()=>{
  const dir=await mkdtemp(path.join(tmpdir(),'winni-test-'));
- process.env.DATA_DIR=dir;process.env.ADMIN_PASSWORD='test-only-long-password';
+ process.env.DATA_DIR=dir;process.env.ADMIN_PASSWORD='abc';
  delete process.env.JSONBIN_BIN_ID;delete process.env.JSONBIN_ACCESS_KEY;
  const {server}=await import('../server.mjs');await new Promise(r=>server.listen(0,'127.0.0.1',r));
  const base=`http://127.0.0.1:${server.address().port}`;let cookie='';

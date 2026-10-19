@@ -13,7 +13,7 @@ El panel está en `/admin.html`. Permite crear, editar, ocultar y eliminar produ
 
 | Variable | Contenido |
 | --- | --- |
-| `ADMIN_PASSWORD` | Contraseña única de al menos 12 caracteres |
+| `ADMIN_PASSWORD` | Contraseña del panel (no puede estar vacía) |
 | `JSONBIN_BIN_ID` | ID del bin privado |
 | `JSONBIN_ACCESS_KEY` | Access Key del bin |
 | `CLOUDINARY_CLOUD_NAME` | Cloud name de Cloudinary |
