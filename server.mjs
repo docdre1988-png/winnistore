@@ -15,10 +15,16 @@ const equal=(a,b)=>{const x=Buffer.from(a),y=Buffer.from(b);return x.length===y.
 async function jsonbin(method,body){
  const response=await fetch(`https://api.jsonbin.io/v3/b/${bin}${method==='GET'?'/latest':''}`,{method,headers:{'Content-Type':'application/json','X-Access-Key':key,'X-Bin-Versioning':'true'},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(12000)});
  if(!response.ok){
-  if(response.status===401||response.status===403)throw fail(method==='PUT'?'El catálogo no tiene permiso para guardar cambios. Revisa el permiso de actualización de su clave de acceso.':'El catálogo no tiene permiso de lectura. Revisa su clave de acceso.',502);
-  if(response.status===404)throw fail('No se encontró el catálogo configurado. Revisa su identificador.',502);
-  if(response.status===429)throw fail('Se alcanzó la cuota de consultas del catálogo. Contacta al administrador de la página.',502);
-  throw fail('El servicio del catálogo no pudo completar la operación. Intenta nuevamente.',502);
+  const details=await response.json().catch(()=>({}));
+  const message=String(details.message||'');
+  if(/requests? exhausted|quota|credits? exhausted/i.test(message)||response.status===429)throw fail('JSONBin agotó su cuota de solicitudes. Revisa el consumo de la cuenta. [CATALOG_QUOTA]',502);
+  if(/version/i.test(message))throw fail('JSONBin rechazó el historial de versiones. Revisa los límites del bin y del plan. [CATALOG_VERSIONS]',502);
+  if(/schema|validation mismatch/i.test(message))throw fail('La estructura del producto no cumple la validación configurada en JSONBin. [CATALOG_SCHEMA]',502);
+  if(/100kb|record over|size|too large/i.test(message))throw fail('JSONBin rechazó el tamaño del catálogo. [CATALOG_SIZE]',502);
+  if(/does not have permission|grant.*permission|permission.*update|permission.*read/i.test(message))throw fail('La clave que usa este despliegue no tiene el permiso necesario. Si la clave de tu cuenta ya tiene Read y Update, verifica que JSONBIN_ACCESS_KEY en Vercel contenga esa misma clave completa. [CATALOG_PERMISSION]',502);
+  if(/invalid.*key|key.*invalid|need to pass.*key|unauthorized|does not belong/i.test(message)||response.status===401)throw fail('JSONBin rechazó la clave configurada en Vercel. JSONBIN_ACCESS_KEY debe contener la clave completa, no el Access Key ID ni la Master Key. [CATALOG_KEY]',502);
+  if(response.status===404||/bin not found|invalid bin/i.test(message))throw fail('No se encontró el catálogo configurado. JSONBIN_BIN_ID debe ser el ID del bin, no el Access Key ID. [CATALOG_BIN]',502);
+  throw fail(`JSONBin rechazó ${method==='PUT'?'el guardado':'la lectura'} del catálogo (HTTP ${response.status}). No se confirmó un problema de permisos. [CATALOG_REJECTED]`,502);
  }
  return (await response.json()).record;
 }

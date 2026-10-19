@@ -57,9 +57,9 @@ test('Adaptadores JSONBin y Cloudinary: credenciales de servidor y sesión entre
  process.env.DATA_DIR=dir;process.env.ADMIN_PASSWORD='cloud-test-long-password';
  process.env.JSONBIN_BIN_ID='1234567890abcdef12345678';process.env.JSONBIN_ACCESS_KEY='private-test-key';
  process.env.CLOUDINARY_CLOUD_NAME='test-cloud';process.env.CLOUDINARY_API_KEY='test-key';process.env.CLOUDINARY_API_SECRET='private-test-secret';
- const originalFetch=globalThis.fetch;let record={products:[]},writes=0,uploads=0,rejectUpload=false;
+ const originalFetch=globalThis.fetch;let record={products:[]},writes=0,uploads=0,rejectUpload=false,rejectCatalog=null;
  globalThis.fetch=async(url,options)=>{
-  if(String(url).startsWith('https://api.jsonbin.io/')){assert.equal(options.headers['X-Access-Key'],'private-test-key');if(options.method==='PUT'){writes++;record=JSON.parse(options.body);}return new Response(JSON.stringify({record}),{status:200});}
+  if(String(url).startsWith('https://api.jsonbin.io/')){assert.equal(options.headers['X-Access-Key'],'private-test-key');if(options.method==='PUT'){if(rejectCatalog)return new Response(JSON.stringify({message:rejectCatalog}),{status:403});writes++;record=JSON.parse(options.body);}return new Response(JSON.stringify({record}),{status:200});}
   if(String(url).startsWith('https://api.cloudinary.com/')){uploads++;if(rejectUpload)return new Response(JSON.stringify({error:{message:'Permission denied private-test-secret'}}),{status:403});assert.equal(options.body.get('asset_folder'),'winni');assert.equal(options.body.get('api_key'),'test-key');assert(options.body.get('signature'));assert(!options.body.has('api_secret'));return new Response(JSON.stringify({secure_url:'https://res.cloudinary.com/test/image/upload/photo.png'}));}
   return originalFetch(url,options);
  };
@@ -70,6 +70,7 @@ test('Adaptadores JSONBin y Cloudinary: credenciales de servidor y sesión entre
   const upload=await (await request('/api/admin/upload','POST',{data:'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jJ1kAAAAASUVORK5CYII='})).json();assert.equal(uploads,1);
   rejectUpload=true;const denied=await request('/api/admin/upload','POST',{data:'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jJ1kAAAAASUVORK5CYII='});assert.equal(denied.status,502);const deniedData=await denied.json();assert(deniedData.error.includes('permiso'));assert(!deniedData.error.includes('private-test-secret'));rejectUpload=false;
   const input={nombre:'Remoto',categoria:'TEST',descripcion:'Descripción',precio:10,imagen:upload.url};assert.equal((await request('/api/admin/products','POST',input)).status,200);assert.equal(writes,1);
+  for(const [message,code] of [['Requests exhausted. Buy additional requests','CATALOG_QUOTA'],['Invalid X-Access-Key provided','CATALOG_KEY'],['X-Access-Key passed does not have permission to update the bin.','CATALOG_PERMISSION'],['Unrecognized upstream refusal private-test-key','CATALOG_REJECTED']]){rejectCatalog=message;const rejection=await request('/api/admin/products','POST',input);assert.equal(rejection.status,502);const error=await rejection.json();assert(error.error.includes(code));assert(!error.error.includes('private-test-key'));}rejectCatalog=null;
   const publicData=await (await request('/api/catalog')).json();assert.equal(publicData.products.length,1);assert(!JSON.stringify(publicData).includes('private-test'));
   const {server:other}=await import('../server.mjs?other-instance');await new Promise(r=>other.listen(0,'127.0.0.1',r));try{const response=await originalFetch(`http://127.0.0.1:${other.address().port}/api/admin/catalog`,{headers:{Cookie:cookie}});assert.equal(response.status,200);}finally{await new Promise(r=>other.close(r));}
  }finally{globalThis.fetch=originalFetch;await new Promise(r=>server.close(r));await rm(dir,{recursive:true,force:true});}
