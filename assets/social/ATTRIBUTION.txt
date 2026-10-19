@@ -1,0 +1,4 @@
+Brand glyphs: Font Awesome Free 6.7.2 (Facebook, Instagram, TikTok).
+Source: https://github.com/FortAwesome/Font-Awesome/tree/6.7.2/svgs/brands
+SVG icons licensed CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+Brand trademarks belong to their respective owners. No endorsement implied.

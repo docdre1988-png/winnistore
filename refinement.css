@@ -414,3 +414,47 @@ header .brand img { width: 84px; height: 84px; }
 @media (max-width: 760px) {
   header .brand img { width: 66px; height: 66px; }
 }
+
+/* Navegación y símbolos de redes con mayor presencia. */
+header > nav > a { font-size: 16px; font-weight: 700; line-height: 1.4; white-space: nowrap; }
+header > nav { gap: 30px; }
+.nav-socials { gap: 9px; padding-left: 24px; }
+.social-brand-icon { display: block; width: 32px; height: 32px; flex: 0 0 32px; object-fit: contain; }
+.social-link { min-width: 46px; min-height: 46px; }
+.nav-socials .social-link { min-width: 46px; min-height: 46px; padding: 7px; }
+.social-sticky .social-link { width: 52px; height: 52px; }
+.social-sticky .social-brand-icon { width: 29px; height: 29px; flex-basis: 29px; }
+.footer-socials { gap: 20px; }
+.footer-socials .social-link { gap: 11px; font-size: 13px; }
+.footer-socials .social-facebook { background: #fff; color: #103b45; }
+.footer-socials .social-instagram { background: #fff; color: #103b45; }
+.footer-socials .social-tiktok { background: #fff; color: #103b45; }
+.footer-socials .social-link:hover { background: #eff7f3; color: #103b45; }
+.social-pending { cursor: default; }
+.social-sticky .social-tiktok { border-bottom: 3px solid var(--green); }
+.bag-icon { flex-shrink: 0; }
+@media (min-width: 761px) and (max-width: 1100px) {
+  header > nav { gap: 18px; }
+  header > nav > a { font-size: 14px; }
+  .nav-socials { gap: 4px; padding-left: 14px; }
+  .nav-socials .social-link { min-width: 38px; min-height: 42px; padding: 5px; }
+  .nav-socials .social-brand-icon { width: 28px; height: 28px; flex-basis: 28px; }
+}
+@media (max-width: 760px) {
+  header > nav { gap: 8px; }
+  header > nav > a[href='#catalogo'] { font-size: 13px; }
+  .nav-socials { gap: 2px; padding-left: 7px; }
+  .nav-socials .social-link { display: inline-flex; min-width: 35px; min-height: 40px; padding: 4px; }
+  .nav-socials .social-brand-icon { width: 27px; height: 27px; flex-basis: 27px; }
+  .social-sticky .social-link { width: 46px; height: 46px; }
+  #open-cart { min-height: 44px; gap: 6px; }
+  .bag-label { display: none; }
+}
+@media (max-width: 360px) {
+  header .brand img { width: 56px; height: 56px; }
+  header > nav { gap: 6px; }
+  .nav-socials { padding-left: 4px; gap: 0; }
+  .nav-socials .social-link { min-width: 31px; padding: 3px; }
+  .nav-socials .social-brand-icon { width: 25px; height: 25px; flex-basis: 25px; }
+  #open-cart { padding-inline: 6px; }
+}
