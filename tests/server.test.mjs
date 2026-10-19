@@ -59,7 +59,7 @@ test('Adaptadores JSONBin y Cloudinary: credenciales de servidor y sesión entre
  process.env.CLOUDINARY_CLOUD_NAME='test-cloud';process.env.CLOUDINARY_API_KEY='test-key';process.env.CLOUDINARY_API_SECRET='private-test-secret';
  const originalFetch=globalThis.fetch;let record={products:[]},writes=0,uploads=0,rejectUpload=false,rejectCatalog=null;
  globalThis.fetch=async(url,options)=>{
-  if(String(url).startsWith('https://api.jsonbin.io/')){assert.equal(options.headers['X-Access-Key'],'private-test-key');if(options.method==='PUT'){if(rejectCatalog)return new Response(JSON.stringify({message:rejectCatalog}),{status:403});writes++;record=JSON.parse(options.body);}return new Response(JSON.stringify({record}),{status:200});}
+  if(String(url).startsWith('https://api.jsonbin.io/')){assert.equal(options.headers['X-Access-Key'],'private-test-key');assert.equal(options.headers['X-Bin-Versioning'],undefined,'No solicitar historial de versiones');if(options.method==='PUT'){if(rejectCatalog)return new Response(JSON.stringify({message:rejectCatalog}),{status:403});writes++;record=JSON.parse(options.body);}return new Response(JSON.stringify({record}),{status:200});}
   if(String(url).startsWith('https://api.cloudinary.com/')){uploads++;if(rejectUpload)return new Response(JSON.stringify({error:{message:'Permission denied private-test-secret'}}),{status:403});assert.equal(options.body.get('asset_folder'),'winni');assert.equal(options.body.get('api_key'),'test-key');assert(options.body.get('signature'));assert(!options.body.has('api_secret'));return new Response(JSON.stringify({secure_url:'https://res.cloudinary.com/test/image/upload/photo.png'}));}
   return originalFetch(url,options);
  };

@@ -13,7 +13,7 @@ const sign=value=>createHmac('sha256',password).update(value).digest('hex');
 const fail=(message,status=400)=>Object.assign(new Error(message),{status});
 const equal=(a,b)=>{const x=Buffer.from(a),y=Buffer.from(b);return x.length===y.length&&timingSafeEqual(x,y);};
 async function jsonbin(method,body){
- const response=await fetch(`https://api.jsonbin.io/v3/b/${bin}${method==='GET'?'/latest':''}`,{method,headers:{'Content-Type':'application/json','X-Access-Key':key,'X-Bin-Versioning':'true'},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(12000)});
+ const response=await fetch(`https://api.jsonbin.io/v3/b/${bin}${method==='GET'?'/latest':''}`,{method,headers:{'Content-Type':'application/json','X-Access-Key':key},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(12000)});
  if(!response.ok){
   const details=await response.json().catch(()=>({}));
   const message=String(details.message||'');

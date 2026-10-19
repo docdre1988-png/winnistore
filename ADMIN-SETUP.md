@@ -37,7 +37,7 @@ La sesión es una cookie firmada HttpOnly y SameSite=Strict con duración de och
 
 El límite de intentos de contraseña (diez por IP cada quince minutos) es por instancia; para protección global configura las reglas de seguridad de Vercel. No es un servicio de usuarios con recuperación de contraseña.
 
-Las actualizaciones de JSONBin guardan el documento completo y activan el historial de versiones. El máximo preventivo es 95 KB. Las lecturas tienen caché por instancia de hasta 15 segundos. Usa un solo administrador a la vez: JSONBin no ofrece aquí una transacción entre funciones y dos cambios simultáneos podrían sobrescribirse. Para varios administradores concurrentes habría que agregar coordinación persistente o migrar a una base transaccional.
+Las actualizaciones de JSONBin guardan el documento completo sin solicitar historial de versiones. El máximo preventivo es 95 KB. Las lecturas tienen caché por instancia de hasta 15 segundos. Usa un solo administrador a la vez: JSONBin no ofrece aquí una transacción entre funciones y dos cambios simultáneos podrían sobrescribirse. Para varios administradores concurrentes habría que agregar coordinación persistente o migrar a una base transaccional.
 
 ### Prueba local
 
