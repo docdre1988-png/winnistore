@@ -460,6 +460,7 @@ header > nav { gap: 30px; }
 }
 
 /* Lectura cómoda: textos auxiliares visibles en escritorio y celular. */
+#help-title > span { color: #d75a00; }
 body { font-size: 16px; }
 .announcement { font-size: 13px; letter-spacing: .6px; }
 .hero-copy .eyebrow { font-size: 15px; letter-spacing: 1px; line-height: 1.7; }
