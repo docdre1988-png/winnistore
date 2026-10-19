@@ -14,7 +14,12 @@ const fail=(message,status=400)=>Object.assign(new Error(message),{status});
 const equal=(a,b)=>{const x=Buffer.from(a),y=Buffer.from(b);return x.length===y.length&&timingSafeEqual(x,y);};
 async function jsonbin(method,body){
  const response=await fetch(`https://api.jsonbin.io/v3/b/${bin}${method==='GET'?'/latest':''}`,{method,headers:{'Content-Type':'application/json','X-Access-Key':key,'X-Bin-Versioning':'true'},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(12000)});
- if(!response.ok)throw fail('No se pudo conectar con JSONBin. Revisa la configuración y la cuota.',502);
+ if(!response.ok){
+  if(response.status===401||response.status===403)throw fail(method==='PUT'?'El catálogo no tiene permiso para guardar cambios. Revisa el permiso de actualización de su clave de acceso.':'El catálogo no tiene permiso de lectura. Revisa su clave de acceso.',502);
+  if(response.status===404)throw fail('No se encontró el catálogo configurado. Revisa su identificador.',502);
+  if(response.status===429)throw fail('Se alcanzó la cuota de consultas del catálogo. Contacta al administrador de la página.',502);
+  throw fail('El servicio del catálogo no pudo completar la operación. Intenta nuevamente.',502);
+ }
  return (await response.json()).record;
 }
 async function read(){if(configError)throw fail(configError,503);if(bin){if(cache&&Date.now()-cache.time<15000)return structuredClone(cache.record);const record=await jsonbin('GET');if(!record||!Array.isArray(record.products))throw fail('El bin debe contener un objeto con products.',502);cache={time:Date.now(),record};return structuredClone(record);}try{return JSON.parse(await fs.readFile(path.join(dataDir,'catalog.json'),'utf8'));}catch(e){if(e.code!=='ENOENT')throw e;return JSON.parse(await fs.readFile(path.join(root,'data/catalog.seed.json'),'utf8'));}}
@@ -51,9 +56,15 @@ export async function handleRequest(req,res){
    const input=await body(req),buffer=Buffer.from(String(input.data||''),'base64');if(buffer.length<12||buffer.length>3*1024*1024)throw fail('La foto debe pesar menos de 3 MB.');
    const ext=buffer.subarray(0,3).equals(Buffer.from([255,216,255]))?'jpg':buffer.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10]))?'png':buffer.toString('ascii',0,4)==='RIFF'&&buffer.toString('ascii',8,12)==='WEBP'?'webp':null;if(!ext)throw fail('Solo se admiten imágenes JPG, PNG o WebP.');
    if(process.env.CLOUDINARY_CLOUD_NAME&&process.env.CLOUDINARY_API_KEY&&process.env.CLOUDINARY_API_SECRET){
-    const timestamp=String(Math.floor(Date.now()/1000)),folder='winni',signature=createHash('sha1').update(`folder=${folder}&timestamp=${timestamp}${process.env.CLOUDINARY_API_SECRET}`).digest('hex');
-    const form=new FormData();form.set('file',new Blob([buffer],{type:`image/${ext==='jpg'?'jpeg':ext}`}),`producto.${ext}`);for(const [k,v] of Object.entries({timestamp,folder,signature,api_key:process.env.CLOUDINARY_API_KEY}))form.set(k,v);
-    const response=await fetch(`https://api.cloudinary.com/v1_1/${encodeURIComponent(process.env.CLOUDINARY_CLOUD_NAME)}/image/upload`,{method:'POST',body:form,signal:AbortSignal.timeout(20000)});if(!response.ok)throw fail('No se pudo subir la foto a Cloudinary.',502);const result=await response.json();if(!result.secure_url?.startsWith('https://'))throw fail('Cloudinary no devolvió una imagen válida.',502);return send(res,201,{url:result.secure_url});
+    const timestamp=String(Math.floor(Date.now()/1000)),folder='winni',signature=createHash('sha1').update(`asset_folder=${folder}&folder=${folder}&timestamp=${timestamp}${process.env.CLOUDINARY_API_SECRET.trim()}`).digest('hex');
+    const form=new FormData();form.set('file',new Blob([buffer],{type:`image/${ext==='jpg'?'jpeg':ext}`}),`producto.${ext}`);for(const [k,v] of Object.entries({timestamp,folder,asset_folder:folder,signature,api_key:process.env.CLOUDINARY_API_KEY.trim()}))form.set(k,v);
+    const response=await fetch(`https://api.cloudinary.com/v1_1/${encodeURIComponent(process.env.CLOUDINARY_CLOUD_NAME.trim())}/image/upload`,{method:'POST',body:form,signal:AbortSignal.timeout(20000)});if(!response.ok){
+     const details=await response.json().catch(()=>({}));const message=String(details.error?.message||'');
+     if(/signature|api.?key|api.?secret|unknown cloud|cloud.?name/i.test(message))throw fail('La conexión de fotos tiene credenciales incorrectas. Revisa los tres datos del servicio de imágenes en Vercel y vuelve a desplegar.',502);
+     if(response.status===401||response.status===403||/permission|not allowed|access denied|unauthorized|forbidden/i.test(message))throw fail('La clave de fotos no tiene permiso para subir imágenes a la carpeta winni. Falta autorizar esa carpeta en el servicio de imágenes.',502);
+     if(response.status===429||/quota|limit exceeded/i.test(message))throw fail('El servicio de fotos alcanzó su cuota. Contacta al administrador de la página.',502);
+     throw fail('No se pudo subir la foto. Prueba con otra imagen; si continúa, revisa la conexión del servicio de imágenes.',502);
+    }const result=await response.json();if(!result.secure_url?.startsWith('https://'))throw fail('Cloudinary no devolvió una imagen válida.',502);return send(res,201,{url:result.secure_url});
    }
    if(process.env.VERCEL)throw fail('Configura Cloudinary para subir fotos en Vercel, o usa una URL HTTPS.',503);
    await fs.mkdir(path.join(dataDir,'uploads'),{recursive:true});const name=randomBytes(16).toString('hex')+'.'+ext;await fs.writeFile(path.join(dataDir,'uploads',name),buffer);return send(res,201,{url:'/uploads/'+name});
