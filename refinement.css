@@ -458,3 +458,78 @@ header > nav { gap: 30px; }
   .nav-socials .social-brand-icon { width: 25px; height: 25px; flex-basis: 25px; }
   #open-cart { padding-inline: 6px; }
 }
+
+/* Lectura cómoda: textos auxiliares visibles en escritorio y celular. */
+body { font-size: 16px; }
+.announcement { font-size: 13px; letter-spacing: .6px; }
+.hero-copy .eyebrow { font-size: 15px; letter-spacing: 1px; line-height: 1.7; }
+.hero h1 > span { font-size: .9em; }
+.hero-copy .description { font-size: 18px; line-height: 1.85; max-width: 42ch; }
+.hero-copy .note { font-size: 15px; line-height: 1.7; }
+.button { font-size: 16px; }
+.eyebrow, .section-heading .eyebrow { font-size: 14px; letter-spacing: .8px; line-height: 1.7; }
+.section-heading > p, .about p:not(.eyebrow) { font-size: 16px; }
+.about a { font-size: 15px; }
+.ticker { font-size: 13px; letter-spacing: .5px; gap: 13px 18px; }
+#filters button { font-size: 13px; line-height: 1.45; min-height: 143px; }
+.category-label { max-width: 155px; }
+#search, .results, .results select { font-size: 15px; }
+.category { font-size: 12px; line-height: 1.5; min-height: 36px; }
+article h3 { font-size: 15px; line-height: 1.6; min-height: 96px; }
+.price { font-size: 17px; }
+.old-price { font-size: 14px; }
+.purchase-list, .purchase-disclosure summary { font-size: 16px; }
+.hours-card p, .hours-card .hours-days { font-size: 15px; }
+.cart-help summary, .cart-help > .purchase-list, .cart-help h3 { font-size: 14px; }
+.cart-hours { font-size: 14px; }
+.cart-hours span { font-size: 13px; }
+.note, #status { font-size: 14px; }
+.item h3, .item p, .quantity { font-size: 14px; }
+.remove { font-size: 13px; }
+.detail-copy .eyebrow { font-size: 13px; }
+.detail-copy h3 { font-size: 15px; }
+#product-description { font-size: 16px; line-height: 1.75; }
+.description-toggle { font-size: 14px; }
+footer > div { font-size: 14px; flex-wrap: wrap; }
+footer > .footer-service, .footer-socials .social-link { font-size: 14px; }
+.whatsapp-float {
+  position: fixed;
+  right: 22px;
+  bottom: max(22px, env(safe-area-inset-bottom));
+  z-index: 12;
+  width: 60px;
+  height: 60px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #128c4a;
+  border: 2px solid #fff;
+  box-shadow: 0 5px 20px #0e743d40;
+  transition: background .2s, box-shadow .2s;
+}
+.whatsapp-float img { display: block; width: 33px; height: 33px; }
+.whatsapp-float:hover { background: #0e743d; box-shadow: 0 7px 24px #0e743d55; }
+body:has(dialog[open]) .whatsapp-float { visibility: hidden; }
+@media (max-width: 760px) {
+  .hero-copy .eyebrow { font-size: 14px; }
+  .hero-copy .description { font-size: 17px; }
+  .hero-copy .note { font-size: 15px; }
+  .announcement, .ticker { font-size: 12px; }
+  .ticker { gap: 10px 13px; }
+  #filters button { font-size: 12px; min-height: 133px; padding: 10px 7px; }
+  .social-sticky { bottom: calc(max(20px, env(safe-area-inset-bottom)) + 74px); }
+  .whatsapp-float { right: 12px; width: 56px; height: 56px; bottom: max(20px, env(safe-area-inset-bottom)); }
+  .whatsapp-float img { width: 31px; height: 31px; }
+}
+@media (max-width: 640px) {
+  .section-heading .eyebrow { font-size: 13px; }
+  .category { font-size: 12px; min-height: 36px; letter-spacing: .3px; }
+  article h3 { font-size: 14px; min-height: 112px; }
+  .product-dialog { padding-top: 38px; }
+  .detail-image { height: clamp(95px, 19dvh, 155px); }
+  .detail-copy .eyebrow { font-size: 12px; }
+  .detail-copy h2 { font-size: 18px; }
+  .detail-copy h3 { font-size: 14px; }
+  #product-description { font-size: 15px; line-height: 1.65; }
+  .description-toggle { font-size: 14px; }
+}
