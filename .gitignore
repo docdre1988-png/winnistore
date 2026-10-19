@@ -4,6 +4,9 @@
 modelo-original/
 contexto.md
 data/catalog.tmp
+data/catalog.remote-review.json
+data/images-review.jpg
+data/catalog-verified.jpg
 data/catalog.json
 data/uploads/
 node_modules/

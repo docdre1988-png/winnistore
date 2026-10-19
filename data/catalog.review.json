@@ -1,0 +1,211 @@
+{
+  "source_sha256": "6f0cbb99a429f9bf660d70b3d0e0d7d69f4a0f3c85a354402f7c09662bff332c",
+  "hoja": "Hoja1",
+  "productos": [
+    {
+      "fila": 2,
+      "id": 1002,
+      "nombre": "SAMSUNG Galaxy A07 4GB 64GB",
+      "categoria": "TELEFONIA Y ACCESORIOS",
+      "precio": 449.0,
+      "imagen_excel": 1,
+      "imagen_publicada": "assets/catalogo/producto-1-1.webp",
+      "imagen_excel_sha256": "e3871b401cd0536954aab492f0b28aded9357524d794548048d1597bf7c2ad4e"
+    },
+    {
+      "fila": 3,
+      "id": 1003,
+      "nombre": "SAMSUNG Celular Galaxy A16 128gb Black",
+      "categoria": "TELEFONIA Y ACCESORIOS",
+      "precio": 599.0,
+      "imagen_excel": 3,
+      "imagen_publicada": "assets/catalogo/producto-2-3.webp",
+      "imagen_excel_sha256": "a49811053b8b5c71d7cd126563c70fdd081542727e371a7c1838fbd6e0b94e39"
+    },
+    {
+      "fila": 4,
+      "id": 1004,
+      "nombre": "APPLE AirPods 4 con Cancelación Activa de Ruido",
+      "categoria": "TELEFONIA Y ACCESORIOS",
+      "precio": 799.0,
+      "imagen_excel": 8,
+      "imagen_publicada": "assets/catalogo/producto-3-4.webp",
+      "imagen_excel_sha256": "35f4c40bb48181a1fc57394f8bec16327d049bd25a591e9d3306edaa7a8f6f40"
+    },
+    {
+      "fila": 5,
+      "id": 1005,
+      "nombre": "LENOVO Reloj Inteligente Fit AMOLED Bluetooth Llamadas Deportivo Gris",
+      "categoria": "TELEFONIA Y ACCESORIOS",
+      "precio": 139.0,
+      "imagen_excel": 11,
+      "imagen_publicada": "assets/catalogo/producto-4-11.webp",
+      "imagen_excel_sha256": "64aa949348b4bddb4b74ce638af5ca90a35c878b6c06bc32e0614938900c67fd"
+    },
+    {
+      "fila": 6,
+      "id": 1006,
+      "nombre": "CONVERSE Zapatillas Urbanas Mujer Converse All Star Double Stack Platform Seasonal Color",
+      "categoria": "CALZADO Y ZAPATILLAS",
+      "precio": 271.92,
+      "imagen_excel": 13,
+      "imagen_publicada": "assets/catalogo/producto-5-12.webp",
+      "imagen_excel_sha256": "f8cf481c2f2010862edcec1756436709468138a8261f39ed2ab48cc4d69dfe2f"
+    },
+    {
+      "fila": 7,
+      "id": 1007,
+      "nombre": "ADIDAS Zapatillas Hombre Running Treadmove KI8354 Adidas",
+      "categoria": "CALZADO Y ZAPATILLAS",
+      "precio": 179.0,
+      "imagen_excel": 15,
+      "imagen_publicada": "assets/catalogo/producto-6-15.webp",
+      "imagen_excel_sha256": "c539299837e3ad96b51bc8894491338146a25078f4ccef902b63587e69705ec1"
+    },
+    {
+      "fila": 8,
+      "id": 1008,
+      "nombre": "NIKE Zapatillas Hombre Training Air Max Alpha Trainer 6 FQ1833-402 Nike",
+      "categoria": "CALZADO Y ZAPATILLAS",
+      "precio": 429.0,
+      "imagen_excel": 18,
+      "imagen_publicada": "assets/catalogo/producto-7-16.webp",
+      "imagen_excel_sha256": "efa2635cf4fc06fcaa665428110dde8bba0d546d2aaec7376b85ac67e8569a72"
+    },
+    {
+      "fila": 9,
+      "id": 1009,
+      "nombre": "NEW BALANCE Zapatillas Urbanas Hombre New Balance 327",
+      "categoria": "CALZADO Y ZAPATILLAS",
+      "precio": 379.9,
+      "imagen_excel": 20,
+      "imagen_publicada": "assets/catalogo/producto-8-20.webp",
+      "imagen_excel_sha256": "c151e544379bd5a3a6e93f53e1099a6a39291ecec7c7320f9257f30b5a52cb0f"
+    },
+    {
+      "fila": 10,
+      "id": 1010,
+      "nombre": "ADIDAS Zapatillas Running Mujer Adidas Response Pace",
+      "categoria": "CALZADO Y ZAPATILLAS",
+      "precio": 199.0,
+      "imagen_excel": 28,
+      "imagen_publicada": "assets/catalogo/producto-9-24.webp",
+      "imagen_excel_sha256": "d7f00eed1273493a5f7dc6bdd957ae27edb01c4f1d2321ef2cae365a9f3f1cbd"
+    },
+    {
+      "fila": 11,
+      "id": 1011,
+      "nombre": "PUMA. Zapatillas Hombre Running Blaze Lite 312587 10",
+      "categoria": "CALZADO Y ZAPATILLAS",
+      "precio": 169.9,
+      "imagen_excel": 32,
+      "imagen_publicada": "assets/catalogo/producto-10-30.webp",
+      "imagen_excel_sha256": "5ff01b5d14f81a6b55e86ddb64eba4eabce582cc308ac9ca87e10d17fb2ce76b"
+    },
+    {
+      "fila": 12,
+      "id": 1012,
+      "nombre": "OSTER Freidora De Aire Oster 6 Litros Ventana Y Luz.",
+      "categoria": "ELECTROHOGAR",
+      "precio": 349.0,
+      "imagen_excel": 36,
+      "imagen_publicada": "assets/catalogo/producto-11-34.webp",
+      "imagen_excel_sha256": "63d0d3638f525faf9287282c4cd94d0f0c77276941bf95fa614d166a69736bf1"
+    },
+    {
+      "fila": 13,
+      "id": 1013,
+      "nombre": "PRACTIKA Cuatricombo Practika Licuadora Bl-600+Arrocera Pom 1 K II +Hervidor Inox 18 Plus+Cafetera Vicenza",
+      "categoria": "ELECTROHOGAR",
+      "precio": 209.0,
+      "imagen_excel": 38,
+      "imagen_publicada": "assets/catalogo/producto-12-38.webp",
+      "imagen_excel_sha256": "cff63b52e449773a880017fb377c2bd02e51710c14b21fc55e1a932e0db8f595"
+    },
+    {
+      "fila": 14,
+      "id": 1014,
+      "nombre": "THOMAS Minipimer 600W TH-8725",
+      "categoria": "ELECTROHOGAR",
+      "precio": 129.0,
+      "imagen_excel": 39,
+      "imagen_publicada": "assets/catalogo/producto-13-39.webp",
+      "imagen_excel_sha256": "ae8c0d4e11aa24dee630598d7837d29a93758d81ce9210f7a67f4355684f4da4"
+    },
+    {
+      "fila": 15,
+      "id": 1015,
+      "nombre": "SYBILLA Top Strapless Mujer Sybilla",
+      "categoria": "MUJER",
+      "precio": 79.9,
+      "imagen_excel": 41,
+      "imagen_publicada": "assets/catalogo/producto-14-40.webp",
+      "imagen_excel_sha256": "151710c774c1af2f48f51f6bec63255884d8d63f23add05abe170160af8b1e95"
+    },
+    {
+      "fila": 16,
+      "id": 1016,
+      "nombre": "SYBILLA Vestido Mujer Sybilla",
+      "categoria": "MUJER",
+      "precio": 119.9,
+      "imagen_excel": 42,
+      "imagen_publicada": "assets/catalogo/producto-15-42.webp",
+      "imagen_excel_sha256": "885c27f5001468ad2a5391478941fc4da4fcc9b899840e6ce20d45afec3f306b"
+    },
+    {
+      "fila": 17,
+      "id": 1017,
+      "nombre": "SYBILLA Polo Mujer Sybilla",
+      "categoria": "MUJER",
+      "precio": 59.9,
+      "imagen_excel": 43,
+      "imagen_publicada": "assets/catalogo/producto-16-43.webp",
+      "imagen_excel_sha256": "edd7aa1fdf230c194944a90a647a8ec80bd6ef3432ebafed47ed87dde0285fd8"
+    },
+    {
+      "fila": 18,
+      "id": 1018,
+      "nombre": "BEARCLIFF Jean Hombre Bearcliff",
+      "categoria": "HOMBRES",
+      "precio": 77.94,
+      "imagen_excel": 46,
+      "imagen_publicada": "assets/catalogo/producto-17-46.webp",
+      "imagen_excel_sha256": "85ed901ba945552e9db689903e944507911334815f34837cd7677381162288e4"
+    },
+    {
+      "fila": 19,
+      "id": 1019,
+      "nombre": "BEARCLIFF. Jean hombre Bearcliff",
+      "categoria": "HOMBRES",
+      "precio": 109.9,
+      "imagen_excel": 47,
+      "imagen_publicada": "assets/catalogo/producto-18-47.webp",
+      "imagen_excel_sha256": "13d2835aa87ca12967bd597c53e40cd0358b62fba3a8cb58a51ac2666c6d275b"
+    },
+    {
+      "fila": 20,
+      "id": 1020,
+      "nombre": "APRENDE EL NEGOCIO DE LAS UÑAS",
+      "categoria": "EDUCACION",
+      "precio": 327.0,
+      "imagen_excel": 45,
+      "imagen_publicada": "assets/catalogo/producto-19-45.webp",
+      "imagen_excel_sha256": "26759404b91243ad0afda273e2f7efc1cd12c1a51bdbe4503642f01e68c8aaf5"
+    },
+    {
+      "fila": 21,
+      "id": 1021,
+      "nombre": "MAQUILLAJE PERMANENTE",
+      "categoria": "EDUCACION",
+      "precio": 255.0,
+      "imagen_excel": 44,
+      "imagen_publicada": "assets/catalogo/producto-20-44.webp",
+      "imagen_excel_sha256": "4247c880ee7ea56166f4b0184bcc96ef2ecd4758f088314061608d36e193d3ba"
+    }
+  ],
+  "observaciones": [
+    "Fila 9: categoría vacía, se conserva CALZADO Y ZAPATILLAS de su sección.",
+    "D13: omitida una instrucción editorial del texto público.",
+    "D17: omitida una frase de certificado ajena a la prenda."
+  ]
+}

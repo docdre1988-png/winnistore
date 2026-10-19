@@ -1,11 +1,11 @@
-// Fuente: CATALOGO (1).xlsx. Una imagen por producto.
-const CONFIG = {"negocio":"Winni Store","whatsapp":"51914663723","moneda":"S/","catalogoDemo":false};
+// Catálogo cotejado visualmente por fila. Una imagen por producto.
+const CONFIG = {"negocio": "Winni Store", "whatsapp": "51914663723", "moneda": "S/", "catalogoDemo": false};
 const PRODUCTOS = [
   {
     "id": 1002,
     "nombre": "SAMSUNG Galaxy A07 4GB 64GB",
     "categoria": "TELEFONIA Y ACCESORIOS",
-    "precio": 449,
+    "precio": 449.0,
     "precioAnterior": null,
     "imagen": "assets/catalogo/producto-1-1.webp",
     "imagenes": [
@@ -19,7 +19,7 @@ const PRODUCTOS = [
     "id": 1003,
     "nombre": "SAMSUNG Celular Galaxy A16 128gb Black",
     "categoria": "TELEFONIA Y ACCESORIOS",
-    "precio": 599,
+    "precio": 599.0,
     "precioAnterior": null,
     "imagen": "assets/catalogo/producto-2-3.webp",
     "imagenes": [
@@ -33,8 +33,8 @@ const PRODUCTOS = [
     "id": 1004,
     "nombre": "APPLE AirPods 4 con Cancelación Activa de Ruido",
     "categoria": "TELEFONIA Y ACCESORIOS",
-    "precio": 799,
-    "precioAnterior": 1099,
+    "precio": 799.0,
+    "precioAnterior": 1099.0,
     "imagen": "assets/catalogo/producto-3-4.webp",
     "imagenes": [
       "assets/catalogo/producto-3-4.webp"
@@ -47,8 +47,8 @@ const PRODUCTOS = [
     "id": 1005,
     "nombre": "LENOVO Reloj Inteligente Fit AMOLED Bluetooth Llamadas Deportivo Gris",
     "categoria": "TELEFONIA Y ACCESORIOS",
-    "precio": 139,
-    "precioAnterior": 199,
+    "precio": 139.0,
+    "precioAnterior": 199.0,
     "imagen": "assets/catalogo/producto-4-11.webp",
     "imagenes": [
       "assets/catalogo/producto-4-11.webp"
@@ -75,8 +75,8 @@ const PRODUCTOS = [
     "id": 1007,
     "nombre": "ADIDAS Zapatillas Hombre Running Treadmove KI8354 Adidas",
     "categoria": "CALZADO Y ZAPATILLAS",
-    "precio": 179,
-    "precioAnterior": 299,
+    "precio": 179.0,
+    "precioAnterior": 299.0,
     "imagen": "assets/catalogo/producto-6-15.webp",
     "imagenes": [
       "assets/catalogo/producto-6-15.webp"
@@ -89,8 +89,8 @@ const PRODUCTOS = [
     "id": 1008,
     "nombre": "NIKE Zapatillas Hombre Training Air Max Alpha Trainer 6 FQ1833-402 Nike",
     "categoria": "CALZADO Y ZAPATILLAS",
-    "precio": 429,
-    "precioAnterior": 655,
+    "precio": 429.0,
+    "precioAnterior": 655.0,
     "imagen": "assets/catalogo/producto-7-16.webp",
     "imagenes": [
       "assets/catalogo/producto-7-16.webp"
@@ -104,7 +104,7 @@ const PRODUCTOS = [
     "nombre": "NEW BALANCE Zapatillas Urbanas Hombre New Balance 327",
     "categoria": "CALZADO Y ZAPATILLAS",
     "precio": 379.9,
-    "precioAnterior": 480,
+    "precioAnterior": 480.0,
     "imagen": "assets/catalogo/producto-8-20.webp",
     "imagenes": [
       "assets/catalogo/producto-8-20.webp"
@@ -117,7 +117,7 @@ const PRODUCTOS = [
     "id": 1010,
     "nombre": "ADIDAS Zapatillas Running Mujer Adidas Response Pace",
     "categoria": "CALZADO Y ZAPATILLAS",
-    "precio": 199,
+    "precio": 199.0,
     "precioAnterior": null,
     "imagen": "assets/catalogo/producto-9-24.webp",
     "imagenes": [
@@ -132,7 +132,7 @@ const PRODUCTOS = [
     "nombre": "PUMA. Zapatillas Hombre Running Blaze Lite 312587 10",
     "categoria": "CALZADO Y ZAPATILLAS",
     "precio": 169.9,
-    "precioAnterior": 279,
+    "precioAnterior": 279.0,
     "imagen": "assets/catalogo/producto-10-30.webp",
     "imagenes": [
       "assets/catalogo/producto-10-30.webp"
@@ -145,8 +145,8 @@ const PRODUCTOS = [
     "id": 1012,
     "nombre": "OSTER Freidora De Aire Oster 6 Litros Ventana Y Luz.",
     "categoria": "ELECTROHOGAR",
-    "precio": 349,
-    "precioAnterior": 499,
+    "precio": 349.0,
+    "precioAnterior": 499.0,
     "imagen": "assets/catalogo/producto-11-34.webp",
     "imagenes": [
       "assets/catalogo/producto-11-34.webp"
@@ -159,7 +159,7 @@ const PRODUCTOS = [
     "id": 1013,
     "nombre": "PRACTIKA Cuatricombo Practika Licuadora Bl-600+Arrocera Pom 1 K II +Hervidor Inox 18 Plus+Cafetera Vicenza",
     "categoria": "ELECTROHOGAR",
-    "precio": 209,
+    "precio": 209.0,
     "precioAnterior": 409.9,
     "imagen": "assets/catalogo/producto-12-38.webp",
     "imagenes": [
@@ -173,8 +173,8 @@ const PRODUCTOS = [
     "id": 1014,
     "nombre": "THOMAS Minipimer 600W TH-8725",
     "categoria": "ELECTROHOGAR",
-    "precio": 129,
-    "precioAnterior": 179,
+    "precio": 129.0,
+    "precioAnterior": 179.0,
     "imagen": "assets/catalogo/producto-13-39.webp",
     "imagenes": [
       "assets/catalogo/producto-13-39.webp"
@@ -244,7 +244,7 @@ const PRODUCTOS = [
     "nombre": "BEARCLIFF. Jean hombre Bearcliff",
     "categoria": "HOMBRES",
     "precio": 109.9,
-    "precioAnterior": 295,
+    "precioAnterior": 295.0,
     "imagen": "assets/catalogo/producto-18-47.webp",
     "imagenes": [
       "assets/catalogo/producto-18-47.webp"
@@ -257,8 +257,8 @@ const PRODUCTOS = [
     "id": 1020,
     "nombre": "APRENDE EL NEGOCIO DE LAS UÑAS",
     "categoria": "EDUCACION",
-    "precio": 327,
-    "precioAnterior": 545,
+    "precio": 327.0,
+    "precioAnterior": 545.0,
     "imagen": "assets/catalogo/producto-19-45.webp",
     "imagenes": [
       "assets/catalogo/producto-19-45.webp"
@@ -271,8 +271,8 @@ const PRODUCTOS = [
     "id": 1021,
     "nombre": "MAQUILLAJE PERMANENTE",
     "categoria": "EDUCACION",
-    "precio": 255,
-    "precioAnterior": 495,
+    "precio": 255.0,
+    "precioAnterior": 495.0,
     "imagen": "assets/catalogo/producto-20-44.webp",
     "imagenes": [
       "assets/catalogo/producto-20-44.webp"

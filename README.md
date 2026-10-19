@@ -18,3 +18,9 @@ Actualización: una imagen visible por producto, sin miniaturas ni galería. Se 
 ## Administración
 
 Panel nuevo: admin.html. El proyecto está preparado para Vercel con catálogo en JSONBin y fotos en Cloudinary. Sigue ADMIN-SETUP.md para configurar las seis variables de entorno y activar la conexión real. El contacto de pedidos ya está configurado al +51 914 663 723. Para probar localmente: copia .env.example a .env, define ADMIN_PASSWORD y ejecuta npm start.
+
+## Catálogo revisado por fila
+
+Se cotejaron visualmente las 47 imágenes incrustadas del Excel y se seleccionó una foto correspondiente para cada uno de los 20 productos. Algunas anclas incluyen imágenes de otros modelos; no se usa automáticamente la primera imagen de la fila. El mapa revisado y la huella del archivo fuente están en data/catalog.review.json. El importador se detiene si cambia el archivo y exige nuevo cotejo.
+
+Se corrigieron las fotos de AirPods, Converse, Nike, Adidas Response Pace, Puma Running, freidora Oster y top Sybilla. Se conservan las rutas públicas que el catálogo de JSONBin ya utiliza. Los productos agregados por el dueño y sus fotos en Cloudinary no se modifican.
