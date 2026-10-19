@@ -9,7 +9,7 @@ Sitio local con el catálogo de CATALOGO (1).xlsx, Hoja1, filas 2–21: 20 produ
 - Contacto: completar CONFIG.whatsapp con el número real, incluyendo código de país y sin símbolos. Mientras está vacío, se puede copiar el pedido.
 - Imágenes del catálogo: assets/catalogo/. No requieren servicios externos. La tipografía de Google requiere internet y cuenta con fuentes de respaldo.
 - El modelo anterior se conserva en modelo-original/. Las páginas legales heredadas requieren los datos reales antes de enlazarlas.
-- Bolsa guardada en el navegador con una nueva clave para evitar mezclar el catálogo antiguo de ejemplo.
+- Bolsa guardada en sessionStorage: una pestaña nueva empieza vacía y las recargas conservan la selección de esa sesión. No se recuperan bolsas antiguas de localStorage.
 
 Validación: sintaxis de JavaScript; reconciliación de productos, categorías e imágenes; apertura y cierre de las 20 fichas; descripción ausente de tarjetas; búsqueda, filtro por categoría y totales de bolsa. No se realizó una comprobación visual en navegador en esta actualización.
 
