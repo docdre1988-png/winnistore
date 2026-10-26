@@ -12,6 +12,16 @@ const attempts=new Map();let queue=Promise.resolve(),cache;
 const sign=value=>createHmac('sha256',password).update(value).digest('hex');
 const fail=(message,status=400)=>Object.assign(new Error(message),{status});
 const equal=(a,b)=>{const x=Buffer.from(a),y=Buffer.from(b);return x.length===y.length&&timingSafeEqual(x,y);};
+const categoryKey=name=>name.normalize('NFKC').trim().replace(/\s+/g,' ').toLocaleLowerCase('es');
+function catalogCategories(record,products=record.products){
+ const categories=[],seen=new Set();
+ for(const value of [...(Array.isArray(record.categories)?record.categories:[]),...products.map(p=>p.categoria)]){
+  if(typeof value!=='string'||!value.trim())continue;
+  const name=value.trim().replace(/\s+/g,' '),key=categoryKey(name);
+  if(!seen.has(key)){seen.add(key);categories.push(name);}
+ }
+ return categories;
+}
 async function jsonbin(method,body){
  const response=await fetch(`https://api.jsonbin.io/v3/b/${bin}${method==='GET'?'/latest':''}`,{method,headers:{'Content-Type':'application/json','X-Access-Key':key},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(12000)});
  if(!response.ok){
@@ -32,6 +42,7 @@ async function read(){if(configError)throw fail(configError,503);if(bin){if(cach
 async function write(record){if(configError)throw fail(configError,503);if(process.env.VERCEL&&!bin)throw fail('Configura JSONBin antes de guardar en Vercel.',503);if(Buffer.byteLength(JSON.stringify(record))>95000)throw fail('El catálogo supera el límite configurado de 95 KB.');if(bin){await jsonbin('PUT',record);cache={time:Date.now(),record:structuredClone(record)};}else{await fs.mkdir(dataDir,{recursive:true});await fs.writeFile(path.join(dataDir,'catalog.tmp'),JSON.stringify(record,null,2));await fs.rename(path.join(dataDir,'catalog.tmp'),path.join(dataDir,'catalog.json'));}}
 function validate(p){
  for(const [field,max] of [['nombre',180],['categoria',80],['descripcion',10000]])if(typeof p[field]!=='string'||!p[field].trim()||p[field].length>max)throw fail(`Revisa el campo ${field}.`);
+ if(['todos','__new__'].includes(categoryKey(p.categoria)))throw fail('Ese nombre de categoría está reservado. Elige otro nombre.');
  if(typeof p.precio!=='number'||!Number.isFinite(p.precio)||p.precio<=0||p.precio>1000000)throw fail('Precio inválido.');
  if(p.precioAnterior!=null&&(!Number.isFinite(p.precioAnterior)||p.precioAnterior<=p.precio))throw fail('El precio anterior debe superar el precio actual.');
  if(typeof p.imagen!=='string'||p.imagen.length>2000||!(/^(?:assets\/catalogo\/|\/uploads\/)[a-zA-Z0-9_.-]+$/.test(p.imagen)||(/^https:\/\//.test(p.imagen)&&(()=>{try{const u=new URL(p.imagen);return !u.username&&!u.password;}catch{return false;}})())))throw fail('Usa una imagen del catálogo, una foto subida o una URL HTTPS.');
@@ -48,7 +59,7 @@ export async function handleRequest(req,res){
  const url=new URL(req.url,'http://localhost'),route=url.pathname;
  if(route.startsWith('/api/')){
   if(req.method!=='GET')originCheck(req);
-  if(route==='/api/catalog'&&req.method==='GET'){const record=await read();return send(res,200,{products:record.products.filter(p=>p.disponible==='SI')});}
+  if(route==='/api/catalog'&&req.method==='GET'){const record=await read();const products=record.products.filter(p=>p.disponible==='SI');return send(res,200,{products,categories:catalogCategories(record,products)});}
   if(route==='/api/login'&&req.method==='POST'){
    if(!password.length)throw fail('Configura ADMIN_PASSWORD en el servidor. No puede estar vacía.',503);
    const ip=req.socket.remoteAddress,now=Date.now();let limit=attempts.get(ip);if(!limit||now>limit.until){limit={count:0,until:now+900000};attempts.set(ip,limit);}if(limit.count>=10)throw fail('Demasiados intentos. Espera 15 minutos.',429);
@@ -57,7 +68,15 @@ export async function handleRequest(req,res){
   }
   authed(req);
   if(route==='/api/logout'&&req.method==='POST'){res.setHeader('Set-Cookie',`winni_admin=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${process.env.VERCEL||process.env.COOKIE_SECURE==='true'?'; Secure':''}`);return send(res,200,{ok:true});}
-  if(route==='/api/admin/catalog'&&req.method==='GET')return send(res,200,{...(await read()),storage:bin?'JSONBin':'Local'});
+  if(route==='/api/admin/catalog'&&req.method==='GET'){const record=await read();return send(res,200,{...record,categories:catalogCategories(record),storage:bin?'JSONBin':'Local'});}
+  if(route==='/api/admin/categories'&&req.method==='POST'){
+   const input=await body(req);
+   if(typeof input.nombre!=='string'||!input.nombre.trim()||input.nombre.length>80)throw fail('Escribe un nombre de categoría de hasta 80 caracteres.');
+   const name=input.nombre.trim().replace(/\s+/g,' ');
+   if(['todos','__new__'].includes(categoryKey(name)))throw fail('Ese nombre está reservado. Elige otro nombre para tu categoría.');
+   const operation=queue.catch(()=>{}).then(async()=>{const record=await read();const categories=catalogCategories(record);if(categories.some(c=>categoryKey(c)===categoryKey(name)))throw fail('Esa categoría ya existe. Puedes seleccionarla al agregar un producto.',409);categories.push(name);record.categories=categories;await write(record);return categories;});
+   queue=operation;return send(res,201,{ok:true,categories:await operation});
+  }
   if(route==='/api/admin/upload'&&req.method==='POST'){
    const input=await body(req),buffer=Buffer.from(String(input.data||''),'base64');if(buffer.length<12||buffer.length>3*1024*1024)throw fail('La foto debe pesar menos de 3 MB.');
    const ext=buffer.subarray(0,3).equals(Buffer.from([255,216,255]))?'jpg':buffer.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10]))?'png':buffer.toString('ascii',0,4)==='RIFF'&&buffer.toString('ascii',8,12)==='WEBP'?'webp':null;if(!ext)throw fail('Solo se admiten imágenes JPG, PNG o WebP.');
@@ -79,7 +98,7 @@ export async function handleRequest(req,res){
   if(match&&['POST','PUT','DELETE'].includes(req.method)){
    const input=req.method==='DELETE'?null:validate(await body(req));const id=match[1]?Number(match[1]):null;
    if((req.method==='POST'&&id)||(req.method!=='POST'&&!id))throw fail('Ruta inválida.');
-   const operation=queue.catch(()=>{}).then(async()=>{const record=await read();let product;if(req.method==='POST'){product={...input,id:Math.max(Date.now(),...record.products.map(p=>p.id+1))};record.products.push(product);}else{const index=record.products.findIndex(p=>p.id===id);if(index<0)throw fail('Producto no encontrado.',404);if(req.method==='DELETE')record.products.splice(index,1);else{product={...input,id};record.products[index]=product;}}await write(record);return product;});queue=operation;const product=await operation;return send(res,200,{ok:true,product});
+   const operation=queue.catch(()=>{}).then(async()=>{const record=await read();record.categories=catalogCategories(record);if(input){const existing=record.categories.find(c=>categoryKey(c)===categoryKey(input.categoria));input.categoria=existing||input.categoria;if(!existing)record.categories.push(input.categoria);}let product;if(req.method==='POST'){product={...input,id:Math.max(Date.now(),...record.products.map(p=>p.id+1))};record.products.push(product);}else{const index=record.products.findIndex(p=>p.id===id);if(index<0)throw fail('Producto no encontrado.',404);if(req.method==='DELETE')record.products.splice(index,1);else{product={...input,id};record.products[index]=product;}}await write(record);return product;});queue=operation;const product=await operation;return send(res,200,{ok:true,product});
   }
   throw fail('Ruta no encontrada.',404);
  }

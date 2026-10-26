@@ -48,3 +48,7 @@ Sin credenciales de servicios, el servidor local usa data/catalog.json y data/up
 `npm test` verifica autenticación, aislamiento de archivos privados, validación, CRUD, ocultación, fotos y conexiones simuladas. `node tools/build.mjs` prepara la carpeta public para Vercel.
 
 Referencias oficiales: https://jsonbin.io/api-reference/bins/read, https://jsonbin.io/api-reference/bins/update, https://cloudinary.com/documentation/image_upload_api_reference y https://vercel.com/docs/functions/runtimes/node-js.
+
+## Categorías independientes
+
+El panel incluye «Agregar categoría» junto a «Agregar producto». El nombre se guarda en la propiedad categories del mismo catálogo de JSONBin y aparece en los filtros de la tienda, aunque todavía no tenga productos. Las categorías existentes se reconocen automáticamente desde los productos; no hay que migrar el bin ni agregar variables. Se impiden nombres vacíos y duplicados por mayúsculas o espacios. Las nuevas categorías usan un icono general del catálogo y los colores de la marca. La tienda actualiza los filtros al cargar o volver a la pestaña (las lecturas pueden tener hasta 15 segundos de caché por instancia).

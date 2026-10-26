@@ -1,5 +1,6 @@
 'use strict';
 let products=PRODUCTOS.filter(p=>p.disponible==='SI');
+let categories=[...new Set(products.map(p=>p.categoria))];
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const money=n=>`${CONFIG.moneda} ${n.toFixed(2)}`;
@@ -21,7 +22,7 @@ const categoryIcons = {
 const categoryLabels = {'todos':'Ver todo','TELEFONIA Y ACCESORIOS':'Telefonía y accesorios','CALZADO Y ZAPATILLAS':'Calzado y zapatillas','ELECTROHOGAR':'Electrohogar','MUJER':'Mujer','HOMBRES':'Hombres','EDUCACION':'Educación'};
 $('filters').setAttribute('role','group');
 $('filters').setAttribute('aria-label','Categorías del catálogo');
-function renderFilters(){$('filters').innerHTML=['todos',...new Set(products.map(p=>p.categoria))].map(c=>`<button data-category="${esc(c)}" aria-pressed="${c==='todos'}"><span class="category-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${categoryIcons[c]||categoryIcons.todos}</svg></span><span class="category-label">${esc(categoryLabels[c]||c)}</span></button>`).join('');}
+function renderFilters(){$('filters').innerHTML=['todos',...new Set([...categories,...products.map(p=>p.categoria)])].map(c=>`<button data-category="${esc(c)}" aria-pressed="${c==='todos'}"><span class="category-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${categoryIcons[c]||categoryIcons.todos}</svg></span><span class="category-label">${esc(categoryLabels[c]||c)}</span></button>`).join('');}
 renderFilters();
 $('filters').addEventListener('click',e=>{const b=e.target.closest('[data-category]');if(b){category=b.dataset.category;render();}});
 $('search').addEventListener('input',render);$('sort').addEventListener('change',render);
@@ -54,7 +55,7 @@ $('product-close').addEventListener('click',()=>$('product-dialog').close());
 $('product-dialog').addEventListener('click',e=>{if(e.target!==$('product-dialog'))return;const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.target.close();});
 $('product-add').addEventListener('click',()=>{const id=Number($('product-add').dataset.id),item=cart.find(x=>x.id===id);if(item&&item.quantity>=99){toast('Máximo 99 unidades por producto.');return;}if(item)item.quantity++;else cart.push({id,quantity:1});save();toast('¡Un favorito más en tu bolsa!');});
 
-async function refreshCatalog(){try{const response=await fetch("/api/catalog",{cache:"no-store"});if(!response.ok)return;const data=await response.json();if(!Array.isArray(data.products))return;products=data.products;cart=cart.filter(x=>products.some(p=>p.id===x.id));if(category!=="todos"&&!products.some(p=>p.categoria===category))category="todos";renderFilters();render();save();}catch{/* Static preview retains the seed catalog. */}}
+async function refreshCatalog(){try{const response=await fetch("/api/catalog",{cache:"no-store"});if(!response.ok)return;const data=await response.json();if(!Array.isArray(data.products))return;products=data.products;categories=Array.isArray(data.categories)?data.categories:[...new Set(products.map(p=>p.categoria))];cart=cart.filter(x=>products.some(p=>p.id===x.id));if(category!=="todos"&&!categories.includes(category))category="todos";renderFilters();render();save();}catch{/* Static preview retains the seed catalog. */}}
 refreshCatalog();
 window.addEventListener("focus",refreshCatalog);
 

@@ -14,12 +14,21 @@ test('Catálogo: autenticación, altas, edición, ocultar, fotos y eliminación 
  try{
   assert.equal((await request('/api/catalog')).status,200);
   assert.equal((await request('/api/admin/catalog')).status,401);
+  assert.equal((await request('/api/admin/categories','POST',{nombre:'Sin acceso'})).status,401);
   assert.equal((await request('/.env')).status,404);
   assert.equal((await request('/data/catalog.seed.json')).status,404);
   assert.equal((await request('/api/login','POST',{password:'wrong'})).status,401);
   const login=await request('/api/login','POST',{password:process.env.ADMIN_PASSWORD});assert.equal(login.status,200);cookie=login.headers.get('set-cookie').split(';')[0];assert(login.headers.get('set-cookie').includes('HttpOnly'));
   assert.equal((await request('/api/admin/products','POST',{}, {Origin:'https://evil.example'})).status,403);
   const original=(await (await request('/api/admin/catalog')).json()).products.length;
+  assert.equal((await request('/api/admin/categories','POST',{nombre:'  Juguetes   y regalos  '})).status,201);
+  const categoryView=await (await request('/api/catalog')).json();
+  assert(categoryView.categories.includes('Juguetes y regalos'));
+  assert.equal(categoryView.products.length,original,'Crear categoría no crea productos ficticios');
+  assert.equal((await request('/api/admin/categories','POST',{nombre:'juguetes y REGALOS'})).status,409);
+  assert.equal((await request('/api/admin/categories','POST',{nombre:'   '})).status,400);
+  assert.equal((await request('/api/admin/categories','POST',{nombre:'todos'})).status,400);
+  assert.equal((await request('/api/admin/categories','POST',{nombre:'a'.repeat(81)})).status,400);
   const input={nombre:'Prueba',categoria:'NUEVA CATEGORIA',descripcion:'Descripción <script> como texto',precio:12.5,precioAnterior:20,imagen:'assets/catalogo/producto-1-1.webp',disponible:'SI'};
   assert.equal((await request('/api/admin/products','POST',{...input,precio:-1})).status,400);
   assert.equal((await request('/api/admin/products','POST',{...input,imagen:'javascript:alert(1)'})).status,400);
@@ -32,6 +41,9 @@ test('Catálogo: autenticación, altas, edición, ocultar, fotos y eliminación 
   const photo=await (await request('/api/admin/upload','POST',{data:'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jJ1kAAAAASUVORK5CYII='})).json();assert(photo.url.startsWith('/uploads/'));assert.equal((await request(photo.url)).status,200);
   assert.equal((await request('/api/admin/products/'+id,'DELETE')).status,200);
   assert.equal((await (await request('/api/admin/catalog')).json()).products.length,original);
+  const afterDelete=await (await request('/api/catalog')).json();
+  assert(afterDelete.categories.includes('Juguetes y regalos'));
+  assert(afterDelete.categories.includes('NUEVA CATEGORIA'),'Las categorías se conservan al quitar su último producto');
   const logout=await request('/api/logout','POST');assert(logout.headers.get('set-cookie').includes('Max-Age=0'));cookie='';assert.equal((await request('/api/admin/catalog')).status,401);
  }finally{await new Promise(r=>server.close(r));await rm(dir,{recursive:true,force:true});}
 });
@@ -72,6 +84,9 @@ test('Adaptadores JSONBin y Cloudinary: credenciales de servidor y sesión entre
   const input={nombre:'Remoto',categoria:'TEST',descripcion:'Descripción',precio:10,imagen:upload.url};assert.equal((await request('/api/admin/products','POST',input)).status,200);assert.equal(writes,1);
   for(const [message,code] of [['Requests exhausted. Buy additional requests','CATALOG_QUOTA'],['Invalid X-Access-Key provided','CATALOG_KEY'],['X-Access-Key passed does not have permission to update the bin.','CATALOG_PERMISSION'],['Unrecognized upstream refusal private-test-key','CATALOG_REJECTED']]){rejectCatalog=message;const rejection=await request('/api/admin/products','POST',input);assert.equal(rejection.status,502);const error=await rejection.json();assert(error.error.includes(code));assert(!error.error.includes('private-test-key'));}rejectCatalog=null;
   const publicData=await (await request('/api/catalog')).json();assert.equal(publicData.products.length,1);assert(!JSON.stringify(publicData).includes('private-test'));
+  assert.equal((await request('/api/admin/categories','POST',{nombre:'Categoría sin productos'})).status,201);
+  assert(record.categories.includes('Categoría sin productos'),'La categoría se guarda en JSONBin');
+  assert.equal(record.products.length,1,'Los productos existentes se conservan');
   const {server:other}=await import('../server.mjs?other-instance');await new Promise(r=>other.listen(0,'127.0.0.1',r));try{const response=await originalFetch(`http://127.0.0.1:${other.address().port}/api/admin/catalog`,{headers:{Cookie:cookie}});assert.equal(response.status,200);}finally{await new Promise(r=>other.close(r));}
  }finally{globalThis.fetch=originalFetch;await new Promise(r=>server.close(r));await rm(dir,{recursive:true,force:true});}
 });
