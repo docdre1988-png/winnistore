@@ -15,6 +15,7 @@ test('Catálogo: autenticación, altas, edición, ocultar, fotos y eliminación 
   assert.equal((await request('/api/catalog')).status,200);
   assert.equal((await request('/api/admin/catalog')).status,401);
   assert.equal((await request('/api/admin/categories','POST',{nombre:'Sin acceso'})).status,401);
+  assert.equal((await request('/api/admin/categories','DELETE',{nombre:'MUJER'})).status,401);
   assert.equal((await request('/.env')).status,404);
   assert.equal((await request('/data/catalog.seed.json')).status,404);
   assert.equal((await request('/api/login','POST',{password:'wrong'})).status,401);
@@ -44,6 +45,21 @@ test('Catálogo: autenticación, altas, edición, ocultar, fotos y eliminación 
   const afterDelete=await (await request('/api/catalog')).json();
   assert(afterDelete.categories.includes('Juguetes y regalos'));
   assert(afterDelete.categories.includes('NUEVA CATEGORIA'),'Las categorías se conservan al quitar su último producto');
+  const movedProduct=(await (await request('/api/admin/products','POST',{...input,disponible:'NO'})).json()).product;
+  assert.equal((await request('/api/admin/categories','DELETE',{nombre:'NUEVA CATEGORIA'})).status,409,'Una categoría con productos requiere destino');
+  assert.equal((await request('/api/admin/categories','DELETE',{nombre:'NUEVA CATEGORIA',moverA:'NUEVA CATEGORIA'})).status,400);
+  assert.equal((await request('/api/admin/categories','DELETE',{nombre:'NUEVA CATEGORIA',moverA:'No existe'})).status,400);
+  const moved=await (await request('/api/admin/categories','DELETE',{nombre:'NUEVA CATEGORIA',moverA:'Juguetes y regalos'})).json();
+  assert.equal(moved.moved,1);
+  const movedCatalog=await (await request('/api/admin/catalog')).json();
+  assert(!movedCatalog.categories.includes('NUEVA CATEGORIA'));
+  const kept=movedCatalog.products.find(p=>p.id===movedProduct.id);
+  assert.equal(kept.categoria,'Juguetes y regalos');assert.equal(kept.disponible,'NO');assert.equal(kept.imagen,input.imagen);assert.equal(kept.precio,input.precio);
+  assert.equal(movedCatalog.products.length,original+1,'Eliminar categorías no elimina productos');
+  await request('/api/admin/products/'+movedProduct.id,'DELETE');
+  assert.equal((await request('/api/admin/categories','DELETE',{nombre:'Juguetes y regalos'})).status,200);
+  assert(!(await (await request('/api/catalog')).json()).categories.includes('Juguetes y regalos'),'Desaparece de los filtros públicos');
+  assert.equal((await request('/api/admin/categories','DELETE',{nombre:'Juguetes y regalos'})).status,404);
   const logout=await request('/api/logout','POST');assert(logout.headers.get('set-cookie').includes('Max-Age=0'));cookie='';assert.equal((await request('/api/admin/catalog')).status,401);
  }finally{await new Promise(r=>server.close(r));await rm(dir,{recursive:true,force:true});}
 });
@@ -87,6 +103,9 @@ test('Adaptadores JSONBin y Cloudinary: credenciales de servidor y sesión entre
   assert.equal((await request('/api/admin/categories','POST',{nombre:'Categoría sin productos'})).status,201);
   assert(record.categories.includes('Categoría sin productos'),'La categoría se guarda en JSONBin');
   assert.equal(record.products.length,1,'Los productos existentes se conservan');
+  assert.equal((await request('/api/admin/categories','DELETE',{nombre:'Categoría sin productos'})).status,200);
+  assert(!record.categories.includes('Categoría sin productos'),'La eliminación se guarda en JSONBin');
+  assert.equal(record.products.length,1);
   const {server:other}=await import('../server.mjs?other-instance');await new Promise(r=>other.listen(0,'127.0.0.1',r));try{const response=await originalFetch(`http://127.0.0.1:${other.address().port}/api/admin/catalog`,{headers:{Cookie:cookie}});assert.equal(response.status,200);}finally{await new Promise(r=>other.close(r));}
  }finally{globalThis.fetch=originalFetch;await new Promise(r=>server.close(r));await rm(dir,{recursive:true,force:true});}
 });

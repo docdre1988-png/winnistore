@@ -77,6 +77,27 @@ export async function handleRequest(req,res){
    const operation=queue.catch(()=>{}).then(async()=>{const record=await read();const categories=catalogCategories(record);if(categories.some(c=>categoryKey(c)===categoryKey(name)))throw fail('Esa categoría ya existe. Puedes seleccionarla al agregar un producto.',409);categories.push(name);record.categories=categories;await write(record);return categories;});
    queue=operation;return send(res,201,{ok:true,categories:await operation});
   }
+  if(route==='/api/admin/categories'&&req.method==='DELETE'){
+   const input=await body(req);
+   if(typeof input.nombre!=='string'||!input.nombre.trim()||input.nombre.length>80)throw fail('Selecciona una categoría válida.');
+   const operation=queue.catch(()=>{}).then(async()=>{
+    const record=await read(),categories=catalogCategories(record);
+    const name=categories.find(c=>categoryKey(c)===categoryKey(input.nombre));
+    if(!name)throw fail('Esa categoría ya no existe.',404);
+    const assigned=record.products.filter(p=>categoryKey(p.categoria)===categoryKey(name));
+    let movedTo=null;
+    if(assigned.length){
+     if(typeof input.moverA!=='string')throw fail('Elige otra categoría para conservar los productos antes de eliminar esta.',409);
+     movedTo=categories.find(c=>categoryKey(c)===categoryKey(input.moverA));
+     if(!movedTo||categoryKey(movedTo)===categoryKey(name))throw fail('Selecciona una categoría de destino diferente y existente.');
+     assigned.forEach(p=>{p.categoria=movedTo;});
+    }
+    record.categories=categories.filter(c=>categoryKey(c)!==categoryKey(name));
+    await write(record);
+    return {categories:record.categories,moved:assigned.length,movedTo};
+   });
+   queue=operation;return send(res,200,{ok:true,...await operation});
+  }
   if(route==='/api/admin/upload'&&req.method==='POST'){
    const input=await body(req),buffer=Buffer.from(String(input.data||''),'base64');if(buffer.length<12||buffer.length>3*1024*1024)throw fail('La foto debe pesar menos de 3 MB.');
    const ext=buffer.subarray(0,3).equals(Buffer.from([255,216,255]))?'jpg':buffer.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10]))?'png':buffer.toString('ascii',0,4)==='RIFF'&&buffer.toString('ascii',8,12)==='WEBP'?'webp':null;if(!ext)throw fail('Solo se admiten imágenes JPG, PNG o WebP.');

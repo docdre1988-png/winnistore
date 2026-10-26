@@ -52,3 +52,5 @@ Referencias oficiales: https://jsonbin.io/api-reference/bins/read, https://jsonb
 ## Categorías independientes
 
 El panel incluye «Agregar categoría» junto a «Agregar producto». El nombre se guarda en la propiedad categories del mismo catálogo de JSONBin y aparece en los filtros de la tienda, aunque todavía no tenga productos. Las categorías existentes se reconocen automáticamente desde los productos; no hay que migrar el bin ni agregar variables. Se impiden nombres vacíos y duplicados por mayúsculas o espacios. Las nuevas categorías usan un icono general del catálogo y los colores de la marca. La tienda actualiza los filtros al cargar o volver a la pestaña (las lecturas pueden tener hasta 15 segundos de caché por instancia).
+
+Cada categoría incluye un botón «Eliminar» con confirmación. Las vacías se eliminan directamente; si tiene productos (también ocultos), el dueño elige otra categoría para trasladarlos en la misma operación. No se eliminan productos ni imágenes. Si no hay otra categoría, debe crearla primero. La categoría eliminada deja de aparecer en los filtros y en el selector del formulario.

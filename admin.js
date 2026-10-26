@@ -1,9 +1,9 @@
 'use strict';
 const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let categories=[],products=[],pendingDelete=null,busy=false,photoReady=null,photoVersion=0;
+let categories=[],products=[],pendingDelete=null,pendingCategory=null,busy=false,photoReady=null,photoVersion=0;
 function notice(text,error=false){$('notice').textContent=text;$('notice').classList.toggle('error',error);}
 function editorNotice(text){$('editor-notice').textContent=text;}
-async function api(route,method='GET',body){let res;try{res=await fetch(route,{method,headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined});}catch{throw Error('No pudimos conectar. Revisa tu conexión e intenta otra vez.');}let data;try{data=await res.json();}catch{throw Error('El servicio no está disponible en este momento. Intenta nuevamente más tarde.');}if(res.status===401){$('editor-dialog').close();$('category-dialog').close();$('dashboard').hidden=true;$('login').hidden=false;$('logout').hidden=true;}if(!res.ok){if(res.status===401)throw Error(route==='/api/login'?'La contraseña no es correcta. Intenta nuevamente.':'Tu sesión terminó. Vuelve a ingresar.');if(res.status===429)throw Error('Has intentado ingresar varias veces. Espera 15 minutos.');if(res.status>=500)throw Error(data.error||'No pudimos completar la operación. Intenta nuevamente más tarde.');throw Error(data.error||'Revisa los datos e intenta nuevamente.');}return data;}
+async function api(route,method='GET',body){let res;try{res=await fetch(route,{method,headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined});}catch{throw Error('No pudimos conectar. Revisa tu conexión e intenta otra vez.');}let data;try{data=await res.json();}catch{throw Error('El servicio no está disponible en este momento. Intenta nuevamente más tarde.');}if(res.status===401){$('editor-dialog').close();$('category-dialog').close();$('delete-category-dialog').close();$('dashboard').hidden=true;$('login').hidden=false;$('logout').hidden=true;}if(!res.ok){if(res.status===401)throw Error(route==='/api/login'?'La contraseña no es correcta. Intenta nuevamente.':'Tu sesión terminó. Vuelve a ingresar.');if(res.status===429)throw Error('Has intentado ingresar varias veces. Espera 15 minutos.');if(res.status>=500)throw Error(data.error||'No pudimos completar la operación. Intenta nuevamente más tarde.');throw Error(data.error||'Revisa los datos e intenta nuevamente.');}return data;}
 function categoryOptions(selected=''){const values=[...new Set([...categories,...products.map(p=>p.categoria)])];if(selected&&!values.includes(selected))values.push(selected);$('category').innerHTML='<option value="">Elige una categoría</option>'+values.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')+'<option value="__new__">+ Crear una categoría</option>';$('category').value=selected;categoryChange();}
 function categoryChange(){const isNew=$('category').value==='__new__';$('new-category-label').hidden=!isNew;$('new-category').required=isNew;}
 $('category').addEventListener('change',()=>{categoryChange();if($('category').value==='__new__')$('new-category').focus();});
@@ -24,7 +24,7 @@ $('confirm-delete').addEventListener('click',async()=>{if(busy||pendingDelete===
 load().catch(e=>{if(!e.message.includes('sesión'))notice(e.message,true);});
 
 function renderCategories(){
- $('category-list').innerHTML=categories.map(name=>'<span class="category-chip">'+esc(name)+'</span>').join('');
+ $('category-list').innerHTML=categories.map(name=>{const count=products.filter(p=>categoryNameKey(p.categoria)===categoryNameKey(name)).length;return '<span class="category-chip"><span>'+esc(name)+'<small>'+count+' producto'+(count===1?'':'s')+'</small></span><button type="button" data-category-delete="'+esc(name)+'" aria-label="Eliminar categoría '+esc(name)+'">Eliminar</button></span>';}).join('');
 }
 $('new-category-button').addEventListener('click',()=>{if(busy)return;$('category-form').reset();$('category-notice').textContent='';$('category-dialog').showModal();});
 $('cancel-category').addEventListener('click',()=>{if(!busy)$('category-dialog').close();});
@@ -34,4 +34,27 @@ $('category-form').addEventListener('submit',async e=>{
  try{const data=await api('/api/admin/categories','POST',{nombre:$('category-name').value.trim()});categories=data.categories;renderCategories();categoryOptions();$('category-dialog').close();notice('¡Listo! La categoría ya aparece en tu tienda y puedes asignarla a un producto.');}
  catch(e){if($('category-dialog').open)$('category-notice').textContent=e.message;else notice(e.message,true);}
  finally{busy=false;$('save-category').disabled=false;$('cancel-category').disabled=false;$('save-category').textContent='Guardar categoría';}
+});
+
+function categoryNameKey(name){return name.normalize('NFKC').trim().replace(/\s+/g,' ').toLocaleLowerCase('es');}
+$('category-list').addEventListener('click',e=>{
+ const button=e.target.closest('[data-category-delete]');if(!button||busy)return;
+ pendingCategory=button.dataset.categoryDelete;
+ const count=products.filter(p=>categoryNameKey(p.categoria)===categoryNameKey(pendingCategory)).length;
+ const others=categories.filter(c=>categoryNameKey(c)!==categoryNameKey(pendingCategory));
+ $('delete-category-name').textContent=pendingCategory;$('delete-category-notice').textContent='';
+ $('move-category-label').hidden=count===0;$('move-category').required=count>0;
+ $('move-category').innerHTML='<option value="">Elige una categoría</option>'+others.map(c=>'<option value="'+esc(c)+'">'+esc(c)+'</option>').join('');
+ $('confirm-delete-category').disabled=count>0&&others.length===0;
+ $('confirm-delete-category').textContent=count?'Mover productos y eliminar':'Eliminar categoría';
+ $('delete-category-info').textContent=count?(others.length?count+' producto'+(count===1?' está asignado':'s están asignados')+' a esta categoría, incluidos los ocultos. Elige dónde moverlos. No se borrará ningún producto.':'Esta categoría tiene productos. Crea primero otra categoría para moverlos y conservarlos.'):'Se quitará de los filtros de tu tienda. No se borrará ningún producto.';
+ $('delete-category-dialog').showModal();
+});
+$('cancel-delete-category').addEventListener('click',()=>{if(!busy)$('delete-category-dialog').close();});
+$('delete-category-dialog').addEventListener('cancel',e=>{if(busy)e.preventDefault();});
+$('delete-category-form').addEventListener('submit',async e=>{
+ e.preventDefault();if(busy||!pendingCategory)return;busy=true;$('confirm-delete-category').disabled=true;$('cancel-delete-category').disabled=true;$('delete-category-notice').textContent='';
+ try{const data=await api('/api/admin/categories','DELETE',{nombre:pendingCategory,moverA:$('move-category').value||undefined});$('delete-category-dialog').close();pendingCategory=null;try{await load();categoryOptions();notice(data.moved?'Categoría eliminada. Sus '+data.moved+' productos se conservaron en «'+data.movedTo+'».':'Categoría eliminada de tu tienda.');}catch{notice('Categoría eliminada. Actualiza la página para ver los cambios.');}}
+ catch(e){if($('delete-category-dialog').open)$('delete-category-notice').textContent=e.message;else notice(e.message,true);}
+ finally{busy=false;$('confirm-delete-category').disabled=false;$('cancel-delete-category').disabled=false;}
 });
